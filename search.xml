@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>2021长安杯-pwn</title>
-    <url>/H.greed/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/</url>
+    <url>/HGREED/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/</url>
     <content><![CDATA[<p>高质量比赛，下辈子再来（</p>
 <span id="more"></span>
 
@@ -20,7 +20,7 @@
   </entry>
   <entry>
     <title>HRP-转生web人</title>
-    <url>/H.greed/2021/09/27/HRP-%E8%BD%AC%E7%94%9Fweb%E4%BA%BA/</url>
+    <url>/HGREED/2021/09/27/HRP-%E8%BD%AC%E7%94%9Fweb%E4%BA%BA/</url>
     <content><![CDATA[<p>和人合资买了SHOW的vip，pwn好卷，于是打算双开了（也许三开？偶尔逆向）</p>
 <span id="more"></span>
 
@@ -73,7 +73,7 @@
   </entry>
   <entry>
     <title>Hello World</title>
-    <url>/H.greed/2021/09/14/hello-world/</url>
+    <url>/HGREED/2021/09/14/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <span id="more"></span>
 
@@ -93,7 +93,7 @@
   </entry>
   <entry>
     <title>how2heap</title>
-    <url>/H.greed/2021/08/29/how2heap/</url>
+    <url>/HGREED/2021/08/29/how2heap/</url>
     <content><![CDATA[<p>HWO 2 HEAP</p>
 <span id="more"></span>
 
@@ -133,7 +133,7 @@
   </entry>
   <entry>
     <title>堆学习_remake</title>
-    <url>/H.greed/2021/10/05/%E5%A0%86%E5%AD%A6%E4%B9%A0-remake/</url>
+    <url>/HGREED/2021/10/05/%E5%A0%86%E5%AD%A6%E4%B9%A0-remake/</url>
     <content><![CDATA[<p>记录内容借鉴来源<a href="https://www.yuque.com/cyberangel/rg9gdm/vsh3kd">https://www.yuque.com/cyberangel/rg9gdm/vsh3kd</a></p>
 <span id="more"></span>
 
@@ -228,7 +228,7 @@
   </entry>
   <entry>
     <title>天翼杯</title>
-    <url>/H.greed/2021/09/28/%E5%A4%A9%E7%BF%BC%E6%9D%AF/</url>
+    <url>/HGREED/2021/09/28/%E5%A4%A9%E7%BF%BC%E6%9D%AF/</url>
     <content><![CDATA[<p>我是废物！！！！（超大声）</p>
 <span id="more"></span>
 
@@ -247,7 +247,7 @@
   </entry>
   <entry>
     <title>整数溢出unlink</title>
-    <url>/H.greed/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/</url>
+    <url>/HGREED/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/</url>
     <content><![CDATA[<h1 id="zctf-2016-note3"><a href="#zctf-2016-note3" class="headerlink" title="zctf_2016_note3"></a>zctf_2016_note3</h1><p>整数溢出的unlink，在edit功能里面造成了整数溢出</p>
 <p>，这个题目的排布也很神奇，原本在heap[-1]处就存在一个堆指针。。。。</p>
 <p>所以溢出成-1大小是无限的</p>
@@ -259,7 +259,7 @@
   </entry>
   <entry>
     <title>绿城杯pwn1-3</title>
-    <url>/H.greed/2021/09/30/%E7%BB%BF%E5%9F%8E%E6%9D%AFpwn1-3/</url>
+    <url>/HGREED/2021/09/30/%E7%BB%BF%E5%9F%8E%E6%9D%AFpwn1-3/</url>
     <content><![CDATA[<p>=-=，不想评价这次的绿城，打过的话懂得都懂yue</p>
 <span id="more"></span>
 
@@ -288,7 +288,7 @@
   </entry>
   <entry>
     <title>记一次自己出的REPWN</title>
-    <url>/H.greed/2021/09/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E7%9A%84REPWN/</url>
+    <url>/HGREED/2021/09/17/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%87%AA%E5%B7%B1%E5%87%BA%E7%9A%84REPWN/</url>
     <content><![CDATA[<p>自己最近在学逆向，想着把re和pwn结合，结果因为pwn的问题反而困扰了自己很久，好在最后搞定了。</p>
 <span id="more"></span>
 
@@ -309,7 +309,7 @@
   </entry>
   <entry>
     <title>逆向学习记录</title>
-    <url>/H.greed/2021/09/15/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
+    <url>/HGREED/2021/09/15/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<p>RE</p>
 <span id="more"></span>
 
@@ -563,7 +563,7 @@
   </entry>
   <entry>
     <title>长城杯pwn1</title>
-    <url>/H.greed/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/</url>
+    <url>/HGREED/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/</url>
     <content><![CDATA[<p>题目存在off by one 以及UAF漏洞</p>
 <p>我们可以利用爆破</p>
 <p>低字节修改到malloc-0x23</p>
