@@ -81,7 +81,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">731</span>
+            <span class="post-count">732</span>
         </span>
     </span>
 
@@ -105,9 +105,9 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <span id="more"></span>
+  <h1 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h1><span id="more"></span>
 
-<h1 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h1><h2 id="Hideit"><a href="#Hideit" class="headerlink" title="Hideit"></a>Hideit</h2><p>findcrypt搜到salsa20。先进行xxtea解密，在salsa20，所以输入为空后，输入正确的随机数。直接拿到最后的字节流，进行异或即可。</p>
+<h2 id="Hideit"><a href="#Hideit" class="headerlink" title="Hideit"></a>Hideit</h2><p>findcrypt搜到salsa20。先进行xxtea解密，在salsa20，所以输入为空后，输入正确的随机数。直接拿到最后的字节流，进行异或即可。</p>
 <p><img src="https://user-images.githubusercontent.com/72968793/141677275-2c81887e-97c5-422a-afa7-e58539d763c5.png" alt="image"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s1 = [<span class="number">0x8D</span>, <span class="number">0xE2</span>, <span class="number">0x3D</span>, <span class="number">0xC2</span>, <span class="number">0x19</span>, <span class="number">0xF2</span>, <span class="number">0x2D</span>, <span class="number">0xCA</span>, <span class="number">0x18</span>, <span class="number">0x14</span>, <span class="number">0xCF</span>, <span class="number">0x52</span>, <span class="number">0x77</span>, <span class="number">0x5A</span>, <span class="number">0x9C</span>, <span class="number">0x13</span>, <span class="number">0xAA</span>, <span class="number">0xCC</span>, <span class="number">0x04</span>, <span class="number">0x5B</span>, <span class="number">0x92</span>, <span class="number">0xC1</span>, <span class="number">0x0C</span>, <span class="number">0x68</span>, <span class="number">0x45</span>, <span class="number">0x58</span>, <span class="number">0xF9</span>, <span class="number">0x47</span>, <span class="number">0x68</span>, <span class="number">0xD9</span>, <span class="number">0x35</span>, <span class="number">0xC5</span>]</span><br><span class="line">s2 = [<span class="number">0xEB</span>, <span class="number">0x8E</span>, <span class="number">0x5C</span>, <span class="number">0xA5</span>, <span class="number">0x62</span>, <span class="number">0xB4</span>, <span class="number">0x1C</span>, <span class="number">0x84</span>, <span class="number">0x5C</span>, <span class="number">0x59</span>, <span class="number">0xFC</span>, <span class="number">0x0D</span>, <span class="number">0x43</span>, <span class="number">0x3C</span>, <span class="number">0xAB</span>, <span class="number">0x20</span>, <span class="number">0xD8</span>, <span class="number">0x93</span>, <span class="number">0x33</span>, <span class="number">0x13</span>, <span class="number">0xA1</span>, <span class="number">0x9E</span>, <span class="number">0x39</span>, <span class="number">0x00</span>, <span class="number">0x76</span>, <span class="number">0x14</span>, <span class="number">0xB5</span>, <span class="number">0x04</span>, <span class="number">0x58</span>, <span class="number">0x9D</span>, <span class="number">0x06</span>, <span class="number">0xB8</span>]</span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">    flag += <span class="built_in">chr</span>(s1[i] ^ s2[i])</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
 

@@ -177,31 +177,11 @@
       
     <div class="article-entry" itemprop="articleBody">
        
-  <span id="more"></span>
-
-<h1 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h1><h2 id="Hideit"><a href="#Hideit" class="headerlink" title="Hideit"></a>Hideit</h2><p>findcrypt搜到salsa20。先进行xxtea解密，在salsa20，所以输入为空后，输入正确的随机数。直接拿到最后的字节流，进行异或即可。</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141677275-2c81887e-97c5-422a-afa7-e58539d763c5.png" alt="image"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s1 = [<span class="number">0x8D</span>, <span class="number">0xE2</span>, <span class="number">0x3D</span>, <span class="number">0xC2</span>, <span class="number">0x19</span>, <span class="number">0xF2</span>, <span class="number">0x2D</span>, <span class="number">0xCA</span>, <span class="number">0x18</span>, <span class="number">0x14</span>, <span class="number">0xCF</span>, <span class="number">0x52</span>, <span class="number">0x77</span>, <span class="number">0x5A</span>, <span class="number">0x9C</span>, <span class="number">0x13</span>, <span class="number">0xAA</span>, <span class="number">0xCC</span>, <span class="number">0x04</span>, <span class="number">0x5B</span>, <span class="number">0x92</span>, <span class="number">0xC1</span>, <span class="number">0x0C</span>, <span class="number">0x68</span>, <span class="number">0x45</span>, <span class="number">0x58</span>, <span class="number">0xF9</span>, <span class="number">0x47</span>, <span class="number">0x68</span>, <span class="number">0xD9</span>, <span class="number">0x35</span>, <span class="number">0xC5</span>]</span><br><span class="line">s2 = [<span class="number">0xEB</span>, <span class="number">0x8E</span>, <span class="number">0x5C</span>, <span class="number">0xA5</span>, <span class="number">0x62</span>, <span class="number">0xB4</span>, <span class="number">0x1C</span>, <span class="number">0x84</span>, <span class="number">0x5C</span>, <span class="number">0x59</span>, <span class="number">0xFC</span>, <span class="number">0x0D</span>, <span class="number">0x43</span>, <span class="number">0x3C</span>, <span class="number">0xAB</span>, <span class="number">0x20</span>, <span class="number">0xD8</span>, <span class="number">0x93</span>, <span class="number">0x33</span>, <span class="number">0x13</span>, <span class="number">0xA1</span>, <span class="number">0x9E</span>, <span class="number">0x39</span>, <span class="number">0x00</span>, <span class="number">0x76</span>, <span class="number">0x14</span>, <span class="number">0xB5</span>, <span class="number">0x04</span>, <span class="number">0x58</span>, <span class="number">0x9D</span>, <span class="number">0x06</span>, <span class="number">0xB8</span>]</span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">    flag += <span class="built_in">chr</span>(s1[i] ^ s2[i])</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
-
-<h1 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h1><h2 id="tiny-httpd"><a href="#tiny-httpd" class="headerlink" title="tiny_httpd"></a><strong>tiny_httpd</strong></h2><p>这是一个超级轻量级的框架百度上有相关注释</p>
-<ol>
-<li>服务器启动，main函数调用startup函数绑定服务端口(指定端口/随机端口)</li>
-<li>main函数进入无限循环，并且由于recv调用而被阻塞，等待HTTP请求。收到请求时，将会派生一个线程运行accept_request函数，然后循环到recv调用，main函数线程继续被阻塞</li>
-<li>在accept_request函数中，通过定制的<code>get_line</code>方法，取出HTTP方法和URL，对于 GET 方法，如果有携带参数，则 <code>query_string</code> 指针指向 url 中<code>？</code>后面的 GET 参数。</li>
-<li>tinyhttpd的服务器文件是放置在以工作目录为相对路径的htdocs文件夹先，对于取出的url，先格式化到path字符数组中，如果是以<code>/</code>结尾的，或者url是目录的情况下，那么默认地在url后加上<code>index.html</code>表示访问主页。</li>
-<li>如果文件路径合法(也就是文件存在)，对于无参数的 GET 请求，读取整个HTTP请求并丢弃，然后直接输出服务器文件到浏览器，即用 HTTP 格式写到套接字上，然后关闭连接。其他情况（带参数 GET，POST 方式，url 为可执行文件），则调用 excute_cgi 函数执行 cgi 脚本。</li>
-<li>读取整个 HTTP 请求并丢弃，如果是 POST 则找出 Content-Length. 把 HTTP 200 状态码写到套接字。</li>
-<li>建立两个管道，<code>cgi_input</code> 和 <code>cgi_output</code>, 并 fork 一个进程。</li>
-<li>在子进程中，把 <code>STDOUT</code> 重定向到 <code>cgi_outputt</code> 的写入端，把 <code>STDIN</code> 重定向到 <code>cgi_input</code> 的读取端，关闭 <code>cgi_input</code> 的写入端 和 <code>cgi_output</code> 的读取端，设置 <code>request_method</code> 的环境变量，GET 的话设置 <code>query_string</code> 的环境变量，POST 的话设置 <code>content_length</code> 的环境变量，这些环境变量都是为了给 cgi 脚本调用，接着用 execl 运行 cgi 程序。</li>
-<li>在父进程中，关闭 <code>cgi_input 的读取端</code> 和 <code>cgi_output 的写入端</code>，如果 POST 的话，把 POST 数据写入 <code>cgi_input</code>，<code>cgi_input</code> 已被重定向到子进程的STDIN，读取 <code>cgi_output</code> 的管道输出，然后把<code>cgi_output</code>的输入写入到套接字中。接着关闭所有管道，等待子进程结束。</li>
-</ol>
-<p><img src="https://images2018.cnblogs.com/blog/1227331/201804/1227331-20180421141626078-1905161224.png" alt="img"><br><img src="https://images2018.cnblogs.com/blog/1227331/201804/1227331-20180421141656263-1597225349.png" alt="img"></p>
-<p>我们对题目给的源码进行结合分析，发现并没有对path变量进行任何的过滤，因此POST可以造成目录穿越漏洞</p>
-<p>最后交由execl(path, NULL);执行</p>
-<p>最后服务器监听反弹shell</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141677395-f338895e-26fe-47e3-8f8c-fafaf83115c3.png" alt="image"></p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141677406-c8f8bbc6-ab08-4420-80d0-b99c32c8aabb.png" alt="image"></p>
- 
+  <h1 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h1> 
+      <a class="article-more-link" href="/2021/11/14/%E6%B9%96%E6%B9%98%E6%9D%AF/"
+        >不进来看看咩(╥╯^╰╥)</a
+      >
+       
       <!-- reward -->
       
     </div>
