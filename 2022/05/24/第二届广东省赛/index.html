@@ -81,7 +81,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">1.7k</span>
+            <span class="post-count">1.6k</span>
         </span>
     </span>
 
@@ -120,8 +120,7 @@
 
 <h1 id="mid-pwn"><a href="#mid-pwn" class="headerlink" title="mid_pwn"></a>mid_pwn</h1><p>2.31的堆题，开了白名单沙盒，想用mprotect是不ok的，然后看下漏洞</p>
 <p><img src="https://user-images.githubusercontent.com/72968793/169864764-36973f18-8dec-4142-92fd-21a818c09be5.png" alt="1653323137(1)"></p>
-<p>size的选取是直接选取的堆的size，我们都知道堆的size是必定以一结尾的，所以造成了off by one的漏洞，大小限制很恶心吧，0x28和0xb0两种，而且他这种堆的机制是靠heap实现的，一句话，“大聪明”才用这种。题目描述远程文件符1-5被占用，所以等下orw，flag的文件描述符是6。</p>
-<p><img src="https://user-images.githubusercontent.com/72968793/169864498-94823a59-812c-42bb-a109-72df4238289c.png" alt="1653323092(1)"></p>
+<p>edit的时候off by one的漏洞，大小限制很恶心吧，0x28和0xb0两种，而且他这种堆的机制是靠heap实现的，一句话，“大聪明”才用这种。题目描述远程文件符1-5被占用，所以等下orw，flag的文件描述符是6。</p>
 <p>思路</p>
 <p>直接off by one 堆叠，打free_hook 然后找到这段gadget</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov rbp, qword ptr [rdi + 0x48]; mov rax, qword ptr [rbp + 0x18]; lea r13, [rbp + 0x10]; mov dword ptr [rbp + 0x10], 0; mov rdi, r13; call qword ptr [rax + 0x28]; </span><br></pre></td></tr></table></figure>
