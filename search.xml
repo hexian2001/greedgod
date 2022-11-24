@@ -1493,4 +1493,26 @@
 
 ]]></content>
   </entry>
+  <entry>
+    <title>闲言碎语</title>
+    <url>/2022/11/24/%E9%97%B2%E8%A8%80%E7%A2%8E%E8%AF%AD/</url>
+    <content><![CDATA[<p>半年没写过了，随便说说点东西吧O(∩_∩)O哈哈~</p>
+<span id="more"></span>
+
+<h1 id="小礼物：开源静态自动化pwn脚本"><a href="#小礼物：开源静态自动化pwn脚本" class="headerlink" title="小礼物：开源静态自动化pwn脚本"></a>小礼物：开源静态自动化pwn脚本</h1><p>推下自己的给新手用的pwn静态自动化脚本</p>
+<p><a href="https://github.com/hexian2001/HRP-CTF-PWN-FUZZ">hexian2001/HRP-CTF-PWN-FUZZ: 基于pwntools的简单CTF AMD64 PWN FUZZ (github.com)</a></p>
+<h1 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h1><p>这段时间已经没怎么打比赛了，退役了，感觉蛮轻松的。以前每场比赛都是一坐一天，不吃不喝，绞尽脑汁，赛后还得抓紧复盘学新知识。现在的比赛更新的太快了，目前趋势就是喜欢在菜单或者EDIT功能上面上绝活，最近看见的protobuf序列化这个我已经吐了。</p>
+<p>现在基本上就是偶尔出点题赚零花钱，对CTF传统GLIBC技术只对栈和多线程逻辑感兴趣了，堆的技术我个人认为价值少的可怜，一个东西他不是越刁钻越有价值的，往往实际运用根本不会允许用户如此放肆的操作内存区块的太笑话了，而且挖到的堆漏洞大多数撑死就是造成拒绝服务，getshell利用难。</p>
+<p>很快要2022圣诞节了，我不过这个节日，所以我选择了给咱们NEP x 攻防世界联合举行的CAT CTF 出了4个pwn</p>
+<p><a href="https://adworld.xctf.org.cn/home/details?hash=c195ea8d-e558-4a69-981b-c5191ef95b89">攻防世界 CAT CTF(xctf.org.cn)</a></p>
+<p>一个比一个花里胡哨，不包含任何传统的GLIBC技术利用，考察的更多的是拓展层次的知识。</p>
+<h1 id="对于新人学pwn的一些碎碎念"><a href="#对于新人学pwn的一些碎碎念" class="headerlink" title="对于新人学pwn的一些碎碎念"></a>对于新人学pwn的一些碎碎念</h1><p>新人学了pwn把栈的几大常用技术整完了，ret2xx系列 栈迁移系列搞定了就差不多了，堆技术把glibc 2.23-2.33的主流的fastbin tcache largebin攻击搞定就行了，IO攻击图一乐吧，喜欢就直接去看FILE结构体的源码。</p>
+<p>学pwn如果是想靠pwn工作是不大现实了，目前来说，因为CTF的PWN和真正运用的PWN就是两码事，一个是人为刻意的漏洞置放对抗，一个是“天然”的漏洞利用。而且glibc pwn说实话，说句难听的人家GLIBC本来很安全了，真有傻逼现实这么写代码造成常见的溢出和UAF漏洞，直接寄了吧。也就是说GLIBC本身没问题，有问题的一直是不规范使用者。</p>
+<p>建议少玩点CTF的GLIBC pwn，能有自己对程序内存的理解和动调手法就完事了，多去看看内核，IOT还有各种服务框架的二进制部分。</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>打了CTF 我血赚，算是走捷径得到了绝大多数大学生永远都得不到的东西，而且得到了很多。</p>
+<p>但是我空虚，空虚在我这1年的CTF竞赛全是游戏罢了，和实际应用基本无关（不过我看最近的出题人们都在出一些有意义的pwn了）</p>
+<p>空虚在拿了这么多奖，感觉自己还是一事无成，连写的操作系统DEMO 都做不到，纯纯二进制调试大师了（x</p>
+<p>希望后来者有缘看见我的文章的，可以明白就一个道理，无论你CTF学什么方向，在你努力提高脚本编写能力的同时，请不要忘记提高你的开发能力。</p>
+]]></content>
+  </entry>
 </search>

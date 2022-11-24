@@ -150,6 +150,56 @@
     
     
     <article
+  id="post-Tcache-Stashing-Unlink-Attack"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2021/10/14/Tcache-Stashing-Unlink-Attack/"
+    >Tcache_Stashing_Unlink_Attack</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/10/14/Tcache-Stashing-Unlink-Attack/" class="article-date">
+  <time datetime="2021-10-14T15:51:24.000Z" itemprop="datePublished">2021-10-14</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>2.29目前是热门</p> 
+      <a class="article-more-link" href="/2021/10/14/Tcache-Stashing-Unlink-Attack/"
+        >不进来看看咩(╥╯^╰╥)</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-广东省强网杯2021"
   class="article article-type-post"
   itemscope
@@ -583,71 +633,6 @@
        
   <p>高质量比赛，下辈子再来（</p> 
       <a class="article-more-link" href="/2021/09/25/2021%E9%95%BF%E5%AE%89%E6%9D%AF-pwn/"
-        >不进来看看咩(╥╯^╰╥)</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-长城杯pwn1"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/"
-    >长城杯pwn1</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/" class="article-date">
-  <time datetime="2021-09-20T04:37:48.000Z" itemprop="datePublished">2021-09-20</time>
-</a>    
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <p>题目存在off by one 以及UAF漏洞</p>
-<p>我们可以利用爆破</p>
-<p>低字节修改到malloc-0x23</p>
-<p>以及改变fastbin堆的fd指向unsortedbin堆</p>
-<p>这样就能在下次申请的时候把这个unsortedbin拉进fastbin</p>
-<p>我们只要改这个unsortedbin的fd指针就可以生效了，低字节修改到malloc-0x23。</p>
-<p>再去利用off by one修改unsortedbin的大小为fastbin的大小</p>
-<p>连续申请两次就可以在heaparry上得到libc的指针</p>
-<p>接着再去把unsortedbin的fd改为0，bk改为__memalign_hook(在malloc-0x10上)</p>
-<p>再去利用off by one 把unsortedbin大小复原</p>
-<p>申请和unsortedbin大小一样的chunk去复原不然无法通过检测</p>
-<p>最后利用onegadget打malloc_hook</p>
-<p>利用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># malloc不符合onegadget触发条件</span><br><span class="line"># malloc_printerr触发malloc_hook</span><br></pre></td></tr></table></figure>
-
-<p>最后double的时候即可触发啦</p> 
-      <a class="article-more-link" href="/2021/09/20/%E9%95%BF%E5%9F%8E%E6%9D%AFpwn1/"
         >不进来看看咩(╥╯^╰╥)</a
       >
        
